@@ -1,92 +1,233 @@
-import React from 'react';
-import { Box, Paper, Typography, TextField, Button } from '@mui/material';
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import { useAuth } from '../../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-
-const validationSchema = Yup.object({
-	email: Yup.string().email('Invalid email').required('Required'),
-	password: Yup.string().required('Required')
-});
-
-const redirectByRole = (role, navigate) => {
-	switch (role) {
-		case 'ADMIN':
-			return navigate('/admin/dashboard');
-		case 'AGENT':
-			return navigate('/agent/dashboard');
-		case 'DEAL_INITIATOR':
-			return navigate('/deal-initiator/dashboard');
-		case 'USER':
-		default:
-			return navigate('/user/dashboard');
-	}
-};
+import React, { useState } from 'react';
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Divider,
+  Alert,
+  IconButton,
+  InputAdornment,
+  Link,
+  FormControlLabel,
+  Checkbox,
+} from '@mui/material';
+import {
+  Visibility,
+  VisibilityOff,
+  Person,
+} from '@mui/icons-material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useAuth } from "../../../contexts/AuthContext";
+import AuthLayout from '../AuthLayout';
 
 const Login = () => {
-	const { login } = useAuth();
-	const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false,
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-	return (
-		<Box sx={{ p: 3, maxWidth: 480, mx: 'auto' }}>
-			<Paper sx={{ p: 4 }}>
-				<Typography variant="h5" gutterBottom>
-					Sign in to your account
-				</Typography>
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-				<Formik
-					initialValues={{ email: '', password: '' }}
-					validationSchema={validationSchema}
-					onSubmit={async (values, { setSubmitting }) => {
-						setSubmitting(true);
-						const res = await login(values.email, values.password);
-						setSubmitting(false);
-						if (res.success) {
-							toast.success('Welcome back!');
-							redirectByRole(res.user?.role, navigate);
-						}
-					}}
-				>
-					{({ values, errors, touched, handleChange, isSubmitting }) => (
-						<Form>
-							<Field
-								as={TextField}
-								fullWidth
-								name="email"
-								label="Email"
-								value={values.email}
-								onChange={handleChange}
-								error={touched.email && !!errors.email}
-								helperText={touched.email && errors.email}
-								sx={{ mb: 2 }}
-							/>
+  const handleChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
 
-							<Field
-								as={TextField}
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								value={values.password}
-								onChange={handleChange}
-								error={touched.password && !!errors.password}
-								helperText={touched.password && errors.password}
-								sx={{ mb: 3 }}
-							/>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-							<Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-								<Button type="submit" variant="contained" disabled={isSubmitting}>
-									{isSubmitting ? 'Signing in...' : 'Sign in'}
-								</Button>
-							</Box>
-						</Form>
-					)}
-				</Formik>
-			</Paper>
-		</Box>
-	);
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      setError('Please fill in all fields');
+      setLoading(false);
+      return;
+    }
+
+    const result = await login(formData.email, formData.password);
+    
+    if (result.success) {
+      // Route based on user type
+      if (result.user.userType === 'admin') {
+        navigate('/founder-dashboard');
+      } else if (result.user.userType === 'agent') {
+        navigate('/agent-dashboard');
+      } else {
+        navigate('/marketplace');
+      }
+    } else {
+      setError(result.error || 'Invalid email or password');
+    }
+    setLoading(false);
+  };
+
+  // Only demo accounts for Buyer/Seller
+  const demoAccounts = [
+    {
+      type: 'user',
+      icon: <Person />,
+      email: 'buyer@demo.com',
+      password: 'demo123',
+      label: 'Buyer Demo'
+    },
+    {
+      type: 'user',
+      icon: <Person />,
+      email: 'seller@demo.com',
+      password: 'demo123',
+      label: 'Seller Demo'
+    },
+  ];
+
+  const handleDemoLogin = (demoEmail, demoPassword) => {
+    setFormData({
+      email: demoEmail,
+      password: demoPassword,
+      rememberMe: false
+    });
+  };
+
+  return (
+    <AuthLayout
+      title="Welcome Back"
+      subtitle="Sign in to your DigiAGIS account"
+    >
+      <form onSubmit={handleSubmit}>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        <TextField
+          fullWidth
+          label="Email Address"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          margin="normal"
+          required
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Person color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <TextField
+          fullWidth
+          label="Password"
+          name="password"
+          type={showPassword ? 'text' : 'password'}
+          value={formData.password}
+          onChange={handleChange}
+          margin="normal"
+          required
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Visibility color="action" />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 2 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                color="primary"
+              />
+            }
+            label="Remember me"
+          />
+          <Link component={RouterLink} to="/forgot-password" variant="body2">
+            Forgot password?
+          </Link>
+        </Box>
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          size="large"
+          disabled={loading}
+          sx={{ mt: 2, mb: 2 }}
+        >
+          {loading ? 'Signing In...' : 'Sign In'}
+        </Button>
+
+        <Divider sx={{ my: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            Demo Access
+          </Typography>
+        </Divider>
+
+        {/* Demo Accounts - Only Buyer/Seller */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Quick demo access for buyers/sellers:
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {demoAccounts.map((account, index) => (
+              <Button
+                key={index}
+                variant="outlined"
+                size="small"
+                startIcon={account.icon}
+                onClick={() => handleDemoLogin(account.email, account.password)}
+                sx={{ justifyContent: 'flex-start', textTransform: 'none' }}
+              >
+                {account.label} ({account.email})
+              </Button>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Official Account Instructions */}
+        <Alert severity="info" sx={{ mb: 2 }}>
+          <Typography variant="body2">
+            <strong>Agents & Admins:</strong> Use your official DigiAGIS email address provided by the platform administrator.
+          </Typography>
+        </Alert>
+
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="body2" color="text.secondary">
+            Don't have an account?{' '}
+            <Link component={RouterLink} to="/register" fontWeight="bold">
+              Sign up
+            </Link>
+          </Typography>
+        </Box>
+      </form>
+    </AuthLayout>
+  );
 };
 
 export default Login;
