@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(t);
   };
 
-  const register = async (data: { name?: string; email: string; password: string; role?: string }) => {
+  const register = async (data: { name?: string; firstName?: string; lastName?: string; email: string; phone?: string; password: string; role?: string }) => {
     try {
       setLoading(true);
       // detect role based on email if not provided
@@ -69,7 +69,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: 'invite_only' };
       }
 
-      const res = await authAPI.register({ ...data, role: 'USER' });
+      // Build payload expected by the backend
+      const fullName = data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim();
+      const payload = {
+        fullName,
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
+        role: 'USER'
+      };
+
+      const res = await authAPI.register(payload);
       if (res.success) {
         const { token: t, refreshToken: r, user: u } = res.data;
         setUser(u);

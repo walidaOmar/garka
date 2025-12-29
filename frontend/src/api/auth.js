@@ -22,11 +22,10 @@ export const authAPI = {
     return res.data;
   },
 
-
-	getProfile: async (token) => {
-		const res = await client.get('/auth/me', withAuth(token));
-		return res.data;
-	},
+  login: async (data) => {
+    const res = await client.post('/auth/login', data);
+    return res.data;
+  },
 
 	updateProfile: async (userId, data, token) => {
 		// backend expects PUT /auth/me for current user

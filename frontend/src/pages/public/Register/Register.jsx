@@ -60,7 +60,7 @@ const Signup = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { signup } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const steps = [
@@ -385,6 +385,20 @@ const Signup = () => {
               By creating an account, you agree to our Terms of Service and Privacy Policy.
               {formData.userType === 'agent' && ' Your AGIS certification will be verified within 24-48 hours.'}
             </Alert>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
+              <input
+                id="agreeToTerms"
+                name="agreeToTerms"
+                type="checkbox"
+                checked={formData.agreeToTerms}
+                onChange={handleChange}
+                aria-label="Agree to terms"
+              />
+              <Typography variant="body2" component="label" htmlFor="agreeToTerms">
+                I agree to the <Link href="/terms" target="_blank">Terms of Service</Link> and <Link href="/privacy" target="_blank">Privacy Policy</Link>.
+              </Typography>
+            </Box>
           </Box>
         );
 
@@ -428,8 +442,14 @@ const Signup = () => {
             <Button
               type="submit"
               variant="contained"
-              disabled={loading}
+              disabled={loading || !formData.agreeToTerms}
               endIcon={<ArrowForward />}
+              onClick={(e) => {
+                if (!formData.agreeToTerms) {
+                  e.preventDefault();
+                  setError('You must agree to the Terms of Service and Privacy Policy');
+                }
+              }}
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
