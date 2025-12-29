@@ -17,18 +17,20 @@ export const authAPI = {
 		return res.data;
 	},
 
-	login: async (credentials) => {
-		const res = await client.post('/auth/login', credentials);
-		return res.data;
-	},
+  activateInvite: async (data) => {
+    const res = await client.post('/auth/activate', data);
+    return res.data;
+  },
+
 
 	getProfile: async (token) => {
-		const res = await client.get('/auth/profile', withAuth(token));
+		const res = await client.get('/auth/me', withAuth(token));
 		return res.data;
 	},
 
 	updateProfile: async (userId, data, token) => {
-		const res = await client.put(`/auth/profile/${userId}`, data, withAuth(token));
+		// backend expects PUT /auth/me for current user
+		const res = await client.put('/auth/me', data, withAuth(token));
 		return res.data;
 	},
 
@@ -40,5 +42,17 @@ export const authAPI = {
 	logout: async (token) => {
 		const res = await client.post('/auth/logout', {}, withAuth(token));
 		return res.data;
+	},
+
+	refresh: async (refreshToken) => {
+		// If backend expects refresh token in body
+		try {
+			const res = await client.post('/auth/refresh', { refreshToken });
+			return res.data;
+		} catch (err) {
+			// Fallback: call without body (cookie-based refresh)
+			const res = await client.post('/auth/refresh');
+			return res.data;
+		}
 	}
 };
