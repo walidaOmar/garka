@@ -81,12 +81,42 @@ export const verifyWebhookSignature = (signatureHeader, rawBody) => {
     const payload = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(typeof rawBody === 'string' ? rawBody : JSON.stringify(rawBody));
     const computed = crypto.createHmac(algo, secret).update(payload).digest('hex');
 
-    // Use timingSafeEqual for comparison
-    const a = Buffer.from(computed);
-    const b = Buffer.from((signatureHeader || '').toString());
+    // Normalize signature header (strip possible prefixes like 'sha512=') and compare as hex bytes
+    const headerRaw = (signatureHeader || '').toString().replace(/^sha(?:256|512)=/i, '').trim();
 
-    if (a.length !== b.length) return false;
-    return crypto.timingSafeEqual(a, b);
+    const safeCompareHex = (hexA, hexB) => {
+      try {
+        const a = Buffer.from(hexA, 'hex');
+        const b = Buffer.from(hexB, 'hex');
+        if (a.length !== b.length) return false;
+        return crypto.timingSafeEqual(a, b);
+      } catch (e) {
+        return false;
+      }
+    };
+
+    // First, try direct hex compare
+    if (safeCompareHex(computed, headerRaw)) return true;
+
+    // Fallback: try normalized JSON string (to handle differences in whitespace/order)
+    try {
+      const payloadStr = Buffer.isBuffer(payload) ? payload.toString('utf8') : payload.toString('utf8');
+      const normalized = JSON.stringify(JSON.parse(payloadStr));
+      const computedNorm = crypto.createHmac(algo, secret).update(normalized).digest('hex');
+      if (safeCompareHex(computedNorm, headerRaw)) return true;
+    } catch (e) {
+      // ignore parse errors
+    }
+
+    // Fallback to utf8-safe compare
+    try {
+      const a = Buffer.from(computed, 'utf8');
+      const b = Buffer.from(headerRaw, 'utf8');
+      if (a.length !== b.length) return false;
+      return crypto.timingSafeEqual(a, b);
+    } catch (e) {
+      return false;
+    }
   } catch (error) {
     logger.error(`Error verifying Monnify signature: ${error.message}`);
     return false;

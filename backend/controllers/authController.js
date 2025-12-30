@@ -228,8 +228,13 @@ export const inviteAccount = async (req, res) => {
     const activationToken = crypto.randomBytes(20).toString('hex');
     const activationExpires = Date.now() + (7 * 24 * 60 * 60 * 1000); // 7 days
 
+    // create a minimal invited user with a temporary password and placeholder phone
+    const salt = await bcrypt.genSalt(10);
+    const tempPass = crypto.randomBytes(8).toString('hex');
+    const hashedTemp = await bcrypt.hash(tempPass, salt);
+
     const invitedUser = await User.create({
-      fullName: fullName || '',
+      fullName: fullName || 'Invited User',
       email: officialEmail,
       role,
       invited: true,
@@ -237,7 +242,9 @@ export const inviteAccount = async (req, res) => {
       activationToken,
       activationExpires,
       isActivated: false,
-      isActive: true
+      isActive: true,
+      password: hashedTemp,
+      phone: req.body.phone || '0000000000'
     });
 
     // Send notification to admin or indicate email-sending (stub for now)

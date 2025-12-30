@@ -4,7 +4,7 @@ const TransactionSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     amount: Number,
-    status: { type: String, enum: ['PENDING', 'SUCCESS', 'FAILED'] },
+    status: { type: String, enum: ['PENDING', 'SUCCESS', 'FAILED', 'COMPLETED'] },
     type: String,
     provider: String,
     providerReference: String,

@@ -2,6 +2,8 @@ import VerificationRequest from '../models/VerificationRequest.js';
 import * as commissionService from './commission.js';
 import { logger } from '../utils/logger.js';
 
+import LandProperty from '../models/LandProperty.js';
+
 export const requestVerification = async (payload) => {
   // Normalize payload fields (frontend sends buyer as buyerId etc.)
   const doc = {
@@ -11,6 +13,15 @@ export const requestVerification = async (payload) => {
     verificationFee: payload.verificationFee || payload.verificationFee || 0,
     termsAccepted: payload.termsAccepted === undefined ? true : payload.termsAccepted
   };
+
+  // Derive agent from property if not supplied
+  if (!doc.agentId && doc.propertyId) {
+    const prop = await LandProperty.findById(doc.propertyId);
+    if (prop && prop.agentId) {
+      doc.agentId = prop.agentId;
+    }
+  }
+
   return await VerificationRequest.create(doc);
 };
 
@@ -32,11 +43,13 @@ export const approveVerification = async (id, adminNote) => {
       const result = await commissionService.distributeCommission(verification);
 
       // Optionally process payouts automatically if configured
-      const env = (await import('../config/env.js')).default;
-      if (env.MONNIFY_AUTO_PAYOUT) {
+      // Check runtime env var for auto payout to allow tests to toggle at runtime
+      const autoPayout = process.env.MONNIFY_AUTO_PAYOUT === 'true';
+      const defaultPayoutProvider = process.env.DEFAULT_PAYOUT_PROVIDER || 'STRIPE';
+      if (autoPayout) {
         const payoutTxIds = (result.transactions || []).slice().map(id => id.toString());
         for (const txId of payoutTxIds) {
-          const tx = await commissionService.processPayout(txId, env.DEFAULT_PAYOUT_PROVIDER);
+          const tx = await commissionService.processPayout(txId, defaultPayoutProvider);
         }
         verification.escrowStatus = 'RELEASED';
         await verification.save();

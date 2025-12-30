@@ -1,9 +1,9 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const app = require('../app.js');
-const User = require('../models/User.js');
+import request from 'supertest';
+import mongoose from 'mongoose';
+import app from '../app.js';
+import User from '../models/User.js';
 
-const { describe, it, expect, beforeAll, afterAll, beforeEach } = require('@jest/globals');
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
 
 if (!(process.env.MONGODB_URI_TEST || global.__MONGODB_AVAILABLE__)) {
   console.warn('Skipping authentication tests: MongoDB not available');

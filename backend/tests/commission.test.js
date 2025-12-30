@@ -19,7 +19,7 @@ if (!(process.env.MONGODB_URI_TEST || global.__MONGODB_AVAILABLE__)) {
       // create active config
       const config = await CommissionConfig.create({ platformPercentage: 10, adminPercentage: 5, agentPercentage: 40, dealInitiatorPercentage: 45, minimumVerificationFee: 1000, createdBy: global.__TEST_USER__ || '000000000000000000000000' });
 
-      const verification = await VerificationRequest.create({ verificationFee: 20000, agentId: mongoose.Types.ObjectId(), dealInitiatorId: mongoose.Types.ObjectId(), propertyId: mongoose.Types.ObjectId(), buyerId: mongoose.Types.ObjectId(), termsAccepted: true });
+      const verification = await VerificationRequest.create({ verificationFee: 20000, agentId: new mongoose.Types.ObjectId(), dealInitiatorId: new mongoose.Types.ObjectId(), propertyId: new mongoose.Types.ObjectId(), buyerId: new mongoose.Types.ObjectId(), termsAccepted: true });
 
       const result = await commissionService.distributeCommission(verification);
 

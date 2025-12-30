@@ -19,15 +19,22 @@ if (!(process.env.MONGODB_URI_TEST || global.__MONGODB_AVAILABLE__)) {
     const userRes = await request(app).post('/api/auth/register').send({
       fullName: 'Buyer', email: 'buyer@example.com', phone: '0800000000', password: 'pass123'
     });
+    // debug
+    console.log('userRes', JSON.stringify(userRes.body));
     userToken = userRes.body.data.token;
 
-    // Create agency user
-    const agentRes = await request(app).post('/api/auth/register').send({
+    // Attempt to create agency user via public register (may be blocked by invite-only flow)
+    await request(app).post('/api/auth/register').send({
       fullName: 'Agent', email: 'agent@example.com', phone: '0800000001', password: 'pass123', role: 'AGENT'
     });
 
+    // Ensure agent user exists (create directly if invite flow blocks public registration)
+    let agentUser = await User.findOne({ email: 'agent@example.com' });
+    if (!agentUser) {
+      agentUser = await User.create({ fullName: 'Agent', email: 'agent@example.com', phone: '0800000001', password: 'pass123', role: 'AGENT', invited: true, isActivated: true });
+    }
+
     // Approve agent via direct DB manipulation for test
-    const agentUser = await User.findOne({ email: 'agent@example.com' });
     await Agent.create({ user: agentUser._id, status: 'APPROVED' });
 
     // Create a property belonging to the agent

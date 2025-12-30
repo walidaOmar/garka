@@ -16,6 +16,9 @@ const router = Router();
 router.use('/auth', authRoutes);
 router.use('/properties', propertyRoutes);
 
+// Public webhook endpoint for Monnify (should be reachable without auth)
+router.post('/payment/monnify/webhook', express.raw({ type: 'application/json' }), async (req, res) => await handleMonnifyWebhook(req, res));
+
 // Protected routes
 router.use('/admin', protect, adminRoutes);
 router.use('/agent', protect, agentRoutes);
@@ -23,9 +26,6 @@ router.use('/deal-initiator', protect, dealInitiatorRoutes);
 router.use('/verification', protect, verificationRoutes);
 router.use('/payment', protect, paymentRoutes);
 router.use('/notifications', protect, notificationRoutes);
-
-// Public webhook endpoint for Monnify (should be reachable without auth)
-router.post('/payment/monnify/webhook', express.raw({ type: 'application/json' }), async (req, res) => await handleMonnifyWebhook(req, res));
 
 // Health check
 router.get('/health', (req, res) => {

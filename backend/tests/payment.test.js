@@ -21,6 +21,10 @@ if (!(process.env.MONGODB_URI_TEST || global.__MONGODB_AVAILABLE__)) {
     await VerificationRequest.deleteMany({});
     await Transaction.deleteMany({});
 
+    // Clean webhook events to avoid cross-test dedupe issues
+    const WebhookEvent = (await import('../models/WebhookEvent.js')).default;
+    await WebhookEvent.deleteMany({});
+
     buyer = await User.create({ fullName: 'Buyer', email: 'buyer@mail.test', phone: '111', password: 'pass', role: 'USER' });
     buyerToken = jwt.sign({ id: buyer._id, role: buyer.role }, process.env.JWT_SECRET);
 
@@ -73,6 +77,10 @@ if (!(process.env.MONGODB_URI_TEST || global.__MONGODB_AVAILABLE__)) {
       .set('Content-Type', 'application/json')
       .set('x-monnify-signature', sig)
       .set('x-event-id', 'evt_1');
+
+    if (res.statusCode !== 200) {
+      console.log('Webhook response body:', res.statusCode, res.text || res.body);
+    }
 
     expect(res.statusCode).toBe(200);
     const updatedTx = await Transaction.findById(tx._id);
