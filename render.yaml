@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: garka-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://GarkarOmarRano:WA0963LId@land-marketplace.qelu64m.mongodb.net/garka?retryWrites=true&w=majority&appName=Land-marketplace
+      - key: JWT_SECRET
+        value: fdfaf6a0e02e7b52cefe3954be043c07b8bf687de6c64279a1d8cc46efcbed1e
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: ENCRYPTION_KEY
+        value: 996cb46690938a929e8dc81ff8c1ea96866dae5875657a77ef87da05be419c1c
+      - key: NODE_ENV
+        value: production
+      - key: MONNIFY_SANDBOX
+        value: "false"
+      - key: MONNIFY_AUTO_PAYOUT
+        value: "true"
+      - key: PLATFORM_COMMISSION
+        value: "0.1"
+      - key: ADMIN_COMMISSION
+        value: "0.05"
