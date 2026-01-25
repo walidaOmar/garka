@@ -29,7 +29,6 @@
     "react-intersection-observer": "^10.0.0",
     "react-leaflet": "^5.0.0",
     "react-pdf": "^10.2.0",
-    "react-query": "^3.39.3",
     "react-router-dom": "^7.10.1",
     "recharts": "^3.6.0",
     "socket.io-client": "^4.8.1",
@@ -56,10 +55,7 @@
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5",
+    "vite": "^5.2.0",
     "vitest": "^1.0.0"
-  },
-  "overrides": {
-    "vite": "npm:rolldown-vite@7.2.5"
   }
 }

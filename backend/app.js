@@ -13,11 +13,22 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
+
+// Respect proxy headers when behind a load balancer (required for secure cookies, rate limiting, etc.)
+if (env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+// CORS: support a comma-separated FRONTEND_URL env value or default to localhost in dev
+const allowedOrigins = (env.FRONTEND_URL || 'http://localhost:3000').split(',').map(u => u.trim());
 app.use(cors({
-	origin: env.NODE_ENV === 'production' 
-		? ['https://yourdomain.com'] 
-		: ['http://localhost:3000'],
-	credentials: true
+  origin: (origin, cb) => {
+    // allow non-browser (curl / server) requests with no origin
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error('CORS policy: origin not allowed'));
+  },
+  credentials: true
 }));
 
 // Rate limiting

@@ -46,6 +46,9 @@ export default {
 	// Google Maps
 	GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
 
+	// Frontend
+	FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
+
 	// Commission Rates
 	PLATFORM_COMMISSION: parseFloat(process.env.PLATFORM_COMMISSION) || 0.1,
 	ADMIN_COMMISSION: parseFloat(process.env.ADMIN_COMMISSION) || 0.05,
