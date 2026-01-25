@@ -64,6 +64,16 @@ app.use('/uploads', express.static('uploads'));
 import apiRoutes from './routes/index.js';
 app.use('/api', apiRoutes);
 
+// Simple health check for load balancers / Render
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    status: 'ok',
+    uptime: process.uptime(),
+    env: env.NODE_ENV
+  });
+});
+
 // Start reservation cleaner in non-test environments (expires unpaid/expired reservations)
 if (env.NODE_ENV !== 'test') {
   import('./services/reservation.js').then(({ startReservationCleaner }) => {

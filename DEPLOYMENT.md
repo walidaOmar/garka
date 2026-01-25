@@ -57,6 +57,28 @@ Other recommendations
 - If Vercel uses the root repo, set the `Root Directory` to `frontend` so it runs build in the right folder.
 - Avoid bundling dev-only aliases for build tools (e.g. replacing custom aliases for `vite`).
 
+Render manifest (recommended)
+
+This repo includes a `render.yaml` at the repository root that defines a simple Node web service for the backend. It ensures Render runs the right commands and provides a health-check path used by the platform.
+
+Quick notes:
+- `render.yaml` uses `buildCommand: "cd backend && npm install"` and `startCommand: "cd backend && npm start"`.
+- `render.yaml` sets `healthCheckPath: /api/health`. The backend exposes this endpoint (see `backend/app.js`).
+- Do NOT store secrets in `render.yaml`; configure the required secrets in the Render Dashboard (or use Render's secrets store).
+
+To deploy with the manifest via Render (Infrastructure-as-Code):
+
+1. Add required environment variables in the Render dashboard for the service `garka-backend`:
+
+```bash
+# At minimum set in Render dashboard:
+# MONGODB_URI, JWT_SECRET, ENCRYPTION_KEY, FRONTEND_URL
+```
+
+2. From the Render dashboard, connect the repository and select the service defined in `render.yaml`. Render will pick up the manifest and create the service for you.
+
+If you prefer to configure the service in the Render UI, ensure Build Command and Start Command match the manifest and set the health check path to `/api/health`.
+
 Next steps you may want me to do
 
 - Run frontend build here and verify (I can run `npm ci && npm run build` inside `frontend`).
