@@ -1,0 +1,50 @@
+2026-01-27T23:40:12.418489297Z ==> Downloading cache...
+2026-01-27T23:40:12.460294265Z ==> Cloning from https://github.com/walidaOmar/garka
+2026-01-27T23:40:13.208183597Z ==> Checking out commit 3c639874a7b4b8829f015f55eda9e4809bde8239 in branch main
+2026-01-27T23:40:19.450834736Z ==> Downloaded 111MB in 5s. Extraction took 2s.
+2026-01-27T23:40:33.558514882Z ==> Using Node.js version 22.22.0 (default)
+2026-01-27T23:40:33.582398672Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-01-27T23:40:33.707291014Z ==> Running build command 'npm run build'...
+2026-01-27T23:40:33.816429893Z 
+2026-01-27T23:40:33.816454623Z > build
+2026-01-27T23:40:33.816458604Z > npm run install:backend && npm run install:frontend && npm run build:frontend
+2026-01-27T23:40:33.816462474Z 
+2026-01-27T23:40:33.924377157Z 
+2026-01-27T23:40:33.924400628Z > install:backend
+2026-01-27T23:40:33.924404188Z > cd backend && npm install
+2026-01-27T23:40:33.924406358Z 
+2026-01-27T23:40:35.672116221Z 
+2026-01-27T23:40:35.672143392Z added 88 packages, and audited 223 packages in 2s
+2026-01-27T23:40:35.672154062Z 
+2026-01-27T23:40:35.672297535Z 26 packages are looking for funding
+2026-01-27T23:40:35.672307895Z   run `npm fund` for details
+2026-01-27T23:40:35.674361607Z 
+2026-01-27T23:40:35.674374177Z 1 high severity vulnerability
+2026-01-27T23:40:35.674377768Z 
+2026-01-27T23:40:35.674381308Z To address all issues, run:
+2026-01-27T23:40:35.674384818Z   npm audit fix
+2026-01-27T23:40:35.674388258Z 
+2026-01-27T23:40:35.674391878Z Run `npm audit` for details.
+2026-01-27T23:40:35.86069377Z 
+2026-01-27T23:40:35.86071782Z > install:frontend
+2026-01-27T23:40:35.86072292Z > cd frontend && npm install
+2026-01-27T23:40:35.86072642Z 
+2026-01-27T23:40:45.114473376Z 
+2026-01-27T23:40:45.114499257Z added 191 packages, and audited 192 packages in 9s
+2026-01-27T23:40:45.114589098Z 
+2026-01-27T23:40:45.114605249Z 31 packages are looking for funding
+2026-01-27T23:40:45.114714261Z   run `npm fund` for details
+2026-01-27T23:40:45.136329624Z 
+2026-01-27T23:40:45.136344745Z 4 vulnerabilities (3 moderate, 1 high)
+2026-01-27T23:40:45.136348805Z 
+2026-01-27T23:40:45.136353125Z To address all issues, run:
+2026-01-27T23:40:45.136356845Z   npm audit fix
+2026-01-27T23:40:45.136360235Z 
+2026-01-27T23:40:45.136363775Z Run `npm audit` for details.
+2026-01-27T23:40:45.303056775Z 
+2026-01-27T23:40:45.303080735Z > build:frontend
+2026-01-27T23:40:45.303086216Z > cd frontend && ./node_modules/.bin/vite build
+2026-01-27T23:40:45.303089765Z 
+2026-01-27T23:40:45.307372363Z sh: 1: ./node_modules/.bin/vite: not found
+2026-01-27T23:40:45.367774272Z ==> Build failed 😞
+2026-01-27T23:40:45.367792573Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys . This error is because of render help me it so that it will talling the system to run as a full stack application using render for back end and versel for frontend. 
