@@ -15,8 +15,8 @@ const app = express();
 app.use(helmet());
 app.use(cors({
 	origin: env.NODE_ENV === 'production' 
-		? ['https://yourdomain.com'] 
-		: ['http://localhost:3000'],
+			? [/\.vercel\.app$/, 'https://garka.vercel.app'] 
+			: ['http://localhost:3000', 'http://localhost:5173'],
 	credentials: true
 }));
 
