@@ -5,6 +5,8 @@
     "install:frontend": "cd frontend && npm install",
     "install:backend": "cd backend && npm install",
     "build:frontend": "cd frontend && npm run build",
+    "build": "npm run install:backend",
+    "start": "npm run start:backend",
     "start:backend": "cd backend && npm start",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev"
