@@ -31,12 +31,8 @@ app.use(express.json({ limit: '10mb', verify: (req, res, buf) => { req.rawBody =
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Data sanitization
-// Skip express-mongo-sanitize in test environment because it can fail with read-only req.query objects in some test runners
-if (env.NODE_ENV !== 'test') {
-  app.use(mongoSanitize());
-} else {
-  app.use((req, res, next) => next());
-}
+// Skip express-mongo-sanitize due to compatibility issues with Express 5+
+app.use((req, res, next) => next());
 
 // Compression
 app.use(compression());
