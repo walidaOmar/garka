@@ -4,9 +4,21 @@ import VerificationRequest from '../models/VerificationRequest.js';
 import { logger } from '../utils/logger.js';
 import env from '../config/env.js';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+let stripe;
+try {
+  if (!env.STRIPE_SECRET_KEY) {
+    logger.warn('STRIPE_SECRET_KEY is not defined. Stripe features will be disabled.');
+  } else {
+    stripe = new Stripe(env.STRIPE_SECRET_KEY);
+  }
+} catch (error) {
+  logger.error(`Failed to initialize Stripe: ${error.message}`);
+}
 
 export const createPaymentIntent = async (amount, currency = 'usd', metadata = {}) => {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please provide STRIPE_SECRET_KEY in environment variables.');
+  }
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // Convert to cents
@@ -31,6 +43,9 @@ export const createPaymentIntent = async (amount, currency = 'usd', metadata = {
 };
 
 export const handleStripeWebhook = async (signature, rawBody) => {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please provide STRIPE_SECRET_KEY in environment variables.');
+  }
   try {
     const event = stripe.webhooks.constructEvent(
       rawBody,
