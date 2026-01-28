@@ -118,16 +118,16 @@ const Navigation = () => {
                   key={item.name}
                   to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all ${
+                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all active:scale-95 touch-manipulation ${
                     isActive 
-                      ? 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600 font-semibold' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-indigo-50 text-indigo-700 border-r-4 border-indigo-600 font-semibold shadow-sm' 
+                      : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'
                   }`}
                 >
                   <Icon size={20} className={isActive ? 'text-indigo-600' : 'text-gray-500'} />
                   <span className="text-sm">{item.name}</span>
                   {item.badge && (
-                    <span className="ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                    <span className="ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[20px] text-center shadow-sm">
                       {item.badge}
                     </span>
                   )}
