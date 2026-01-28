@@ -52,7 +52,8 @@ const seedDatabase = async () => {
       phone: '08023456789',
       password: agentPassword,
       role: 'AGENT',
-      isActive: true
+      isActive: true,
+      isVerified: true
     });
     
     const agent = await Agent.create({
@@ -73,7 +74,8 @@ const seedDatabase = async () => {
       phone: '08034567890',
       password: initiatorPassword,
       role: 'DEAL_INITIATOR',
-      isActive: true
+      isActive: true,
+      isVerified: true
     });
     
     const dealInitiator = await DealInitiator.create({
@@ -126,7 +128,8 @@ const seedDatabase = async () => {
       phone: '08045678901',
       password: userPassword,
       role: 'USER',
-      isActive: true
+      isActive: true,
+      isVerified: true
     });
     
     logger.info('✅ Database seeded successfully!');
