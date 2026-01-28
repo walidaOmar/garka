@@ -55,10 +55,13 @@ const Header = () => {
   };
 
   const handleDashboard = () => {
-    if (user.userType === 'agent') {
+    const role = user.userType || user.role;
+    if (role === 'agent' || role === 'AGENT') {
       navigate('/agent-dashboard');
-    } else if (user.userType === 'admin') {
-      navigate('/founder-dashboard');
+    } else if (role === 'admin' || role === 'ADMIN') {
+      navigate('/admin/dashboard');
+    } else if (role === 'DEAL_INITIATOR') {
+      navigate('/deal-initiator-dashboard');
     }
     handleClose();
   };
@@ -82,7 +85,7 @@ const Header = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Chip 
                 icon={<BusinessCenter />} 
-                label={`${user.name} (${user.userType})`} 
+                label={`${user.name || user.fullName} (${user.userType || user.role})`} 
                 variant="outlined" 
                 sx={{ color: 'white', borderColor: 'white' }}
               />
@@ -113,7 +116,9 @@ const Header = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {(user.userType === 'admin' || user.userType === 'agent') && (
+                {(user.userType === 'admin' || user.role === 'ADMIN' || 
+                  user.userType === 'agent' || user.role === 'AGENT' ||
+                  user.role === 'DEAL_INITIATOR') && (
                   <MenuItem onClick={handleDashboard}>
                     <Dashboard sx={{ mr: 1 }} />
                     Dashboard

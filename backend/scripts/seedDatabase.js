@@ -31,7 +31,8 @@ const seedDatabase = async () => {
       password: adminPassword,
       role: 'ADMIN',
       isActive: true,
-      isVerified: true
+      isVerified: true,
+      verificationStatus: 'verified'
     });
     
     // Create commission config
@@ -53,7 +54,8 @@ const seedDatabase = async () => {
       password: agentPassword,
       role: 'AGENT',
       isActive: true,
-      isVerified: true
+      isVerified: true,
+      verificationStatus: 'verified'
     });
     
     const agent = await Agent.create({
@@ -75,7 +77,8 @@ const seedDatabase = async () => {
       password: initiatorPassword,
       role: 'DEAL_INITIATOR',
       isActive: true,
-      isVerified: true
+      isVerified: true,
+      verificationStatus: 'verified'
     });
     
     const dealInitiator = await DealInitiator.create({
@@ -129,7 +132,8 @@ const seedDatabase = async () => {
       password: userPassword,
       role: 'USER',
       isActive: true,
-      isVerified: true
+      isVerified: true,
+      verificationStatus: 'verified'
     });
     
     logger.info('✅ Database seeded successfully!');
