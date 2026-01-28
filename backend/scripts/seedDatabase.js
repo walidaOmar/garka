@@ -55,6 +55,7 @@ const seedDatabase = async () => {
       role: 'AGENT',
       isActive: true,
       isVerified: true,
+      isActivated: true,
       verificationStatus: 'verified'
     });
     
@@ -78,6 +79,7 @@ const seedDatabase = async () => {
       role: 'DEAL_INITIATOR',
       isActive: true,
       isVerified: true,
+      isActivated: true,
       verificationStatus: 'verified'
     });
     
