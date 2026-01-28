@@ -4,7 +4,7 @@ import {
   Home, Search, Shield, MessageSquare, Bell, LogOut, 
   Menu as MenuIcon, X, LogIn, UserPlus, Palette,
   ChevronDown, Heart, Star, ShieldCheck, Building,
-  Wallet, PieChart, Users, Settings, Activity
+  Wallet, PieChart, Users, Settings, Activity, CheckCircle
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import './Manu.css';
