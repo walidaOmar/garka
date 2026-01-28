@@ -10,5 +10,8 @@
     "start:backend": "cd backend && npm start",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev"
+  },
+  "dependencies": {
+    "lucide-react": "^0.563.0"
   }
 }

@@ -1,14 +1,20 @@
 import React from 'react';
-import Header from './Header';
+import Navigation from './Navigation';
 import Footer from './Footer';
 import { Box } from '@mui/material';
 
 const Layout = ({ children }) => (
-  <>
-    <Header />
-    <Box component="main" sx={{ mt: 4, minHeight: '60vh', width: '100%', px: { xs: 1, sm: 2, md: 4 } }}>{children}</Box>
-    <Footer />
-  </>
+  <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f9fafb' }}>
+    <Box sx={{ width: 260, flexShrink: 0, display: { xs: 'none', md: 'block' } }}>
+      <Navigation />
+    </Box>
+    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, sm: 3, md: 4 } }}>
+        {children}
+      </Box>
+      <Footer />
+    </Box>
+  </Box>
 );
 
 export default Layout;

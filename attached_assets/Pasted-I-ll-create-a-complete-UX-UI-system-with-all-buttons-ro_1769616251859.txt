@@ -1,0 +1,748 @@
+I'll create a complete UX/UI system with all buttons, role-based navigation, and a seed system for your AGIS platform. Here's the comprehensive implementation ready for Replit AI Sandbox.
+
+## 🎨 Complete Button System & Navigation Design
+
+### 1. Button Component System
+
+```jsx
+// src/components/ui/Button.jsx
+import React from 'react';
+import { LucideIcon } from 'lucide-react';
+
+export const Button = ({ 
+  children, 
+  variant = 'primary', 
+  size = 'md', 
+  icon: Icon,
+  iconPosition = 'left',
+  loading = false,
+  fullWidth = false,
+  ...props 
+}) => {
+  const base = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center';
+  
+  const variants = {
+    primary: 'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500 shadow-sm hover:shadow',
+    secondary: 'bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 focus:ring-gray-500 shadow-sm',
+    success: 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
+    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
+    ghost: 'bg-transparent hover:bg-gray-100 text-gray-700 focus:ring-gray-500',
+    outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50 focus:ring-primary-500',
+  };
+  
+  const sizes = {
+    xs: 'px-2.5 py-1.5 text-xs gap-1',
+    sm: 'px-3 py-2 text-sm gap-1.5',
+    md: 'px-4 py-2.5 text-sm gap-2',
+    lg: 'px-6 py-3 text-base gap-2.5',
+  };
+
+  return (
+    <button
+      className={`${base} ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''}`}
+      disabled={loading || props.disabled}
+      {...props}
+    >
+      {loading && (
+        <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+        </svg>
+      )}
+      {!loading && Icon && iconPosition === 'left' && <Icon className="w-4 h-4" />}
+      <span>{children}</span>
+      {!loading && Icon && iconPosition === 'right' && <Icon className="w-4 h-4" />}
+    </button>
+  );
+};
+
+// Specialized Button Components for AGIS
+export const ActionButton = ({ icon, children, ...props }) => (
+  <Button icon={icon} variant="primary" {...props}>{children}</Button>
+);
+
+export const SecondaryButton = ({ icon, children, ...props }) => (
+  <Button icon={icon} variant="secondary" {...props}>{children}</Button>
+);
+
+export const SuccessButton = ({ icon, children, ...props }) => (
+  <Button icon={icon} variant="success" {...props}>{children}</Button>
+);
+
+export const DangerButton = ({ icon, children, ...props }) => (
+  <Button icon={icon} variant="danger" {...props}>{children}</Button>
+);
+
+export const IconButton = ({ icon: Icon, label, ...props }) => (
+  <button
+    className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+    aria-label={label}
+    {...props}
+  >
+    <Icon className="w-5 h-5" />
+  </button>
+);
+```
+
+### 2. Navigation & Layout System
+
+```jsx
+// src/components/layout/Navigation.jsx
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { 
+  Home, Search, Users, User, BarChart3, Shield, 
+  FileText, MessageSquare, Bell, Settings, LogOut,
+  Building, MapPin, TrendingUp, Wallet, CheckCircle,
+  Filter, Plus, Download, Upload, Eye, Edit, Trash2,
+  Phone, Mail, Calendar, Share2, Star, Heart
+} from 'lucide-react';
+import { Button } from '../ui/Button';
+
+const Navigation = ({ currentUser, onLogout, onSwitchRole }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Seed Users Database (No Activation Required)
+  const seedUsers = {
+    buyer: {
+      id: 'buyer_001',
+      name: 'Adebola Johnson',
+      role: 'buyer',
+      email: 'adebola@example.com',
+      icon: User,
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-100'
+    },
+    seller: {
+      id: 'seller_001',
+      name: 'Chuks Okonkwo',
+      role: 'seller',
+      email: 'chuks@example.com',
+      icon: Building,
+      color: 'text-green-600',
+      bgColor: 'bg-green-100'
+    },
+    agent: {
+      id: 'agent_001',
+      name: 'Amara Nwosu',
+      role: 'agent',
+      email: 'amara@example.com',
+      icon: Shield,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100'
+    },
+    surveyor: {
+      id: 'surveyor_001',
+      name: 'Tunde Surveyor',
+      role: 'surveyor',
+      email: 'tunde@example.com',
+      icon: MapPin,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100'
+    },
+    developer: {
+      id: 'developer_001',
+      name: 'Landmark Developers',
+      role: 'developer',
+      email: 'dev@landmark.com',
+      icon: TrendingUp,
+      color: 'text-red-600',
+      bgColor: 'bg-red-100'
+    },
+    deal_initiator: {
+      id: 'initiator_001',
+      name: 'Platform Coordinator',
+      role: 'deal_initiator',
+      email: 'coordinator@agis.com',
+      icon: CheckCircle,
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-100'
+    }
+  };
+
+  // Role-based Navigation Items
+  const navItems = {
+    all: [
+      { name: 'Marketplace', path: '/marketplace', icon: Search, visible: true },
+      { name: 'Dashboard', path: '/dashboard', icon: Home, visible: true },
+      { name: 'Messages', path: '/messages', icon: MessageSquare, visible: true },
+      { name: 'Notifications', path: '/notifications', icon: Bell, badge: 3, visible: true },
+    ],
+    buyer: [
+      { name: 'My Properties', path: '/buyer/properties', icon: Heart },
+      { name: 'Verification Requests', path: '/buyer/verifications', icon: Shield },
+      { name: 'Saved Searches', path: '/buyer/saved', icon: Star },
+    ],
+    seller: [
+      { name: 'List Properties', path: '/seller/list', icon: Plus },
+      { name: 'My Listings', path: '/seller/listings', icon: FileText },
+      { name: 'Sale Progress', path: '/seller/progress', icon: TrendingUp },
+    ],
+    agent: [
+      { name: 'Verification Jobs', path: '/agent/jobs', icon: Shield, badge: 5 },
+      { name: 'My Listings', path: '/agent/listings', icon: Building },
+      { name: 'Client Management', path: '/agent/clients', icon: Users },
+      { name: 'Earnings', path: '/agent/earnings', icon: Wallet },
+    ],
+    surveyor: [
+      { name: 'Survey Requests', path: '/surveyor/requests', icon: MapPin },
+      { name: 'My Portfolio', path: '/surveyor/portfolio', icon: FileText },
+      { name: 'Schedule', path: '/surveyor/schedule', icon: Calendar },
+    ],
+    developer: [
+      { name: 'Projects', path: '/developer/projects', icon: Building },
+      { name: 'Team', path: '/developer/team', icon: Users },
+      { name: 'Analytics', path: '/developer/analytics', icon: BarChart3 },
+    ],
+    deal_initiator: [
+      { name: 'Coordination Hub', path: '/initiator/hub', icon: CheckCircle, badge: 12 },
+      { name: 'Active Deals', path: '/initiator/deals', icon: TrendingUp },
+      { name: 'Commission Tracking', path: '/initiator/commission', icon: Wallet },
+    ]
+  };
+
+  const getCurrentNavItems = () => {
+    const userRole = currentUser?.role || 'buyer';
+    return [...navItems.all, ...(navItems[userRole] || [])];
+  };
+
+  return (
+    <div className="flex flex-col h-screen bg-gray-50">
+      {/* Top Header */}
+      <header className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">AGIS Platform</span>
+            </Link>
+
+            {/* Role Switcher */}
+            <div className="flex items-center space-x-4">
+              <div className="relative group">
+                <button className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">
+                  <currentUser.icon className={`w-5 h-5 ${currentUser.color}`} />
+                  <span className="font-medium">{currentUser.name}</span>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${currentUser.bgColor} ${currentUser.color}`}>
+                    {currentUser.role.replace('_', ' ').toUpperCase()}
+                  </span>
+                </button>
+                
+                {/* Role Dropdown */}
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="p-3 border-b border-gray-200">
+                    <p className="text-sm text-gray-600">Switch User Role:</p>
+                  </div>
+                  <div className="p-2">
+                    {Object.values(seedUsers).map((user) => (
+                      <button
+                        key={user.id}
+                        onClick={() => onSwitchRole(user)}
+                        className={`flex items-center space-x-3 w-full p-2 rounded-lg hover:bg-gray-50 ${
+                          currentUser.id === user.id ? 'bg-primary-50' : ''
+                        }`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${user.bgColor}`}>
+                          <user.icon className={`w-4 h-4 ${user.color}`} />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="font-medium text-sm">{user.name}</p>
+                          <p className="text-xs text-gray-500">{user.role.replace('_', ' ')}</p>
+                        </div>
+                        {currentUser.id === user.id && (
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="flex items-center space-x-2">
+                <IconButton icon={Bell} label="Notifications" />
+                <IconButton icon={Settings} label="Settings" />
+                <Button icon={LogOut} variant="ghost" size="sm" onClick={onLogout}>
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content with Sidebar */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar Navigation */}
+        <aside className="hidden lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto">
+          <nav className="p-4 space-y-1">
+            {getCurrentNavItems().map((item) => {
+              const Icon = item.icon;
+              const isActive = location.pathname === item.path;
+              
+              return (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${
+                    isActive 
+                      ? 'bg-primary-50 text-primary-700 border-r-4 border-primary-600' 
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="font-medium">{item.name}</span>
+                  {item.badge && (
+                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Platform Stats */}
+          <div className="p-4 border-t border-gray-200">
+            <h4 className="text-sm font-semibold text-gray-900 mb-3">Platform Stats</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Active Users</span>
+                <span className="font-medium">1,234</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Verified Properties</span>
+                <span className="font-medium">456</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Deals Today</span>
+                <span className="font-medium">12</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* Mobile Bottom Navigation */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+          <div className="flex justify-around items-center h-16">
+            {getCurrentNavItems()
+              .filter(item => ['Marketplace', 'Dashboard', 'Messages', 'Notifications'].includes(item.name))
+              .map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={`flex flex-col items-center justify-center flex-1 min-w-0 p-2 ${
+                      isActive ? 'text-primary-600' : 'text-gray-500'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="text-xs mt-1 truncate">{item.name}</span>
+                  </Link>
+                );
+              })}
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+          {/* Role-specific Welcome */}
+          <div className="mb-6">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+              Welcome, {currentUser.name} 👋
+            </h1>
+            <p className="text-gray-600 mt-1">
+              {currentUser.role === 'buyer' && 'Find and verify properties with confidence'}
+              {currentUser.role === 'seller' && 'List and sell your properties securely'}
+              {currentUser.role === 'agent' && 'Manage verifications and grow your business'}
+              {currentUser.role === 'surveyor' && 'Handle survey requests and build portfolio'}
+              {currentUser.role === 'developer' && 'Manage projects and track development'}
+              {currentUser.role === 'deal_initiator' && 'Coordinate deals and ensure platform success'}
+            </p>
+          </div>
+          
+          {/* Content will be injected here by router */}
+          <div id="main-content">
+            {/* This is where your page components will render */}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Navigation;
+```
+
+### 3. Complete Seed Data & Mock Database
+
+```jsx
+// src/data/seedDatabase.js
+export const seedDatabase = {
+  // All seed users (no activation required)
+  users: {
+    buyer_001: {
+      id: 'buyer_001',
+      name: 'Adebola Johnson',
+      email: 'adebola@example.com',
+      phone: '+2348012345678',
+      role: 'buyer',
+      budgetRange: '₦200M - ₦250M',
+      preferredLocations: ['Asokoro', 'Maitama', 'Lekki'],
+      joinedDate: '2024-01-15',
+      avatarColor: 'bg-blue-500'
+    },
+    seller_001: {
+      id: 'seller_001',
+      name: 'Chuks Okonkwo',
+      email: 'chuks@example.com',
+      phone: '+2348098765432',
+      role: 'seller',
+      propertiesOwned: 5,
+      totalListings: 12,
+      joinedDate: '2024-01-10',
+      avatarColor: 'bg-green-500'
+    },
+    agent_001: {
+      id: 'agent_001',
+      name: 'Amara Nwosu',
+      email: 'amara@example.com',
+      phone: '+2348055551234',
+      role: 'agent',
+      agisId: 'AGIS-789XYZ',
+      trustScore: 92,
+      completedVerifications: 45,
+      rating: 4.8,
+      subscription: 'pro',
+      joinedDate: '2024-01-01',
+      avatarColor: 'bg-purple-500'
+    },
+    surveyor_001: {
+      id: 'surveyor_001',
+      name: 'Tunde Surveyor',
+      email: 'tunde@example.com',
+      phone: '+2348033334444',
+      role: 'surveyor',
+      licenseNumber: 'SURV-12345',
+      specialization: ['Land Surveying', 'Topographic'],
+      experience: '8 years',
+      joinedDate: '2024-01-05',
+      avatarColor: 'bg-orange-500'
+    },
+    developer_001: {
+      id: 'developer_001',
+      name: 'Landmark Developers Ltd.',
+      email: 'dev@landmark.com',
+      phone: '+2348022223333',
+      role: 'developer',
+      rcNumber: 'RC: 1234567',
+      projectsCompleted: 24,
+      activeProjects: 6,
+      teamSize: 45,
+      joinedDate: '2024-01-03',
+      avatarColor: 'bg-red-500'
+    },
+    deal_initiator_001: {
+      id: 'deal_initiator_001',
+      name: 'Platform Coordinator',
+      email: 'coordinator@agis.com',
+      phone: '+234800AGIS123',
+      role: 'deal_initiator',
+      dealsCoordinated: 156,
+      successRate: '94.2%',
+      platformCommission: 2.5,
+      joinedDate: '2024-01-01',
+      avatarColor: 'bg-indigo-500'
+    }
+  },
+
+  // Mock properties for marketplace
+  properties: [
+    {
+      id: 'prop_001',
+      title: 'Luxury Villa Asokoro',
+      size: '1000 sqm',
+      titleType: 'C-of-O',
+      location: 'Asokoro, Abuja',
+      price: '₦250,000,000',
+      features: ['Exclusive Area', '24/7 Security', 'Landscaped Garden', 'Swimming Pool'],
+      verificationStatus: 'verified',
+      agentId: 'agent_001',
+      images: 5,
+      views: 124,
+      listedDate: '2024-01-10'
+    },
+    {
+      id: 'prop_002',
+      title: 'Commercial Plot Lekki Phase 1',
+      size: '500 sqm',
+      titleType: 'Governor\'s Consent',
+      location: 'Lekki, Lagos',
+      price: '₦180,000,000',
+      features: ['Prime Location', 'Road Access', 'Drainage', 'Fenced'],
+      verificationStatus: 'pending',
+      agentId: 'agent_001',
+      images: 3,
+      views: 89,
+      listedDate: '2024-01-12'
+    }
+  ],
+
+  // Mock verification requests
+  verificationRequests: [
+    {
+      id: 'vr_001',
+      propertyId: 'prop_001',
+      buyerId: 'buyer_001',
+      agentId: 'agent_001',
+      dealInitiatorId: 'deal_initiator_001',
+      status: 'in_progress',
+      paymentStatus: 'confirmed',
+      amount: 25000,
+      platformCommission: 2500,
+      requestedDate: '2024-01-15',
+      claimedDate: '2024-01-15'
+    }
+  ],
+
+  // Platform statistics
+  platformStats: {
+    totalUsers: 1234,
+    activeListings: 456,
+    verifiedProperties: 289,
+    pendingVerifications: 67,
+    dealsClosed: 156,
+    totalTransactionValue: '₦45.8B'
+  }
+};
+
+// Helper function to get user by role
+export const getUserByRole = (role) => {
+  return Object.values(seedDatabase.users).find(user => user.role === role);
+};
+
+// Helper function to get all users
+export const getAllUsers = () => {
+  return seedDatabase.users;
+};
+```
+
+### 4. Main App Entry Point with Role Management
+
+```jsx
+// src/App.jsx
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navigation from './components/layout/Navigation';
+import { seedDatabase, getUserByRole } from './data/seedDatabase';
+import { 
+  Home, Search, Users, Shield, Building, 
+  FileText, MessageSquare, Bell, BarChart3,
+  Wallet, MapPin, TrendingUp, CheckCircle
+} from 'lucide-react';
+
+// Import your page components
+import Marketplace from './pages/Marketplace';
+import Dashboard from './pages/Dashboard';
+import Messages from './pages/Messages';
+import Notifications from './pages/Notifications';
+
+function App() {
+  const [currentUser, setCurrentUser] = useState(() => {
+    // Initialize with buyer by default
+    const defaultUser = getUserByRole('buyer');
+    return {
+      ...defaultUser,
+      icon: Users // Assign appropriate icon
+    };
+  });
+
+  // Initialize all seed users with their icons
+  useEffect(() => {
+    const icons = {
+      buyer: Users,
+      seller: Building,
+      agent: Shield,
+      surveyor: MapPin,
+      developer: TrendingUp,
+      deal_initiator: CheckCircle
+    };
+
+    // Update current user with icon
+    setCurrentUser(prev => ({
+      ...prev,
+      icon: icons[prev.role] || Users
+    }));
+  }, []);
+
+  const handleSwitchRole = (newUser) => {
+    const icons = {
+      buyer: Users,
+      seller: Building,
+      agent: Shield,
+      surveyor: MapPin,
+      developer: TrendingUp,
+      deal_initiator: CheckCircle
+    };
+
+    setCurrentUser({
+      ...newUser,
+      icon: icons[newUser.role] || Users
+    });
+  };
+
+  const handleLogout = () => {
+    // Reset to buyer on logout
+    const buyer = getUserByRole('buyer');
+    setCurrentUser({
+      ...buyer,
+      icon: Users
+    });
+  };
+
+  return (
+    <Router>
+      <div className="min-h-screen bg-gray-50">
+        <Navigation 
+          currentUser={currentUser}
+          onSwitchRole={handleSwitchRole}
+          onLogout={handleLogout}
+        />
+        
+        <Routes>
+          {/* Public routes accessible to all */}
+          <Route path="/marketplace" element={<Marketplace user={currentUser} />} />
+          <Route path="/dashboard" element={<Dashboard user={currentUser} />} />
+          <Route path="/messages" element={<Messages user={currentUser} />} />
+          <Route path="/notifications" element={<Notifications user={currentUser} />} />
+          
+          {/* Role-specific routes */}
+          <Route path="/buyer/*" element={<BuyerRoutes user={currentUser} />} />
+          <Route path="/seller/*" element={<SellerRoutes user={currentUser} />} />
+          <Route path="/agent/*" element={<AgentRoutes user={currentUser} />} />
+          <Route path="/surveyor/*" element={<SurveyorRoutes user={currentUser} />} />
+          <Route path="/developer/*" element={<DeveloperRoutes user={currentUser} />} />
+          <Route path="/initiator/*" element={<DealInitiatorRoutes user={currentUser} />} />
+          
+          {/* Fallback */}
+          <Route path="/" element={<Marketplace user={currentUser} />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+// Role-specific route components
+const BuyerRoutes = ({ user }) => (
+  <Routes>
+    <Route path="/properties" element={<div>Buyer Properties Page</div>} />
+    <Route path="/verifications" element={<div>Buyer Verification Requests</div>} />
+    <Route path="/saved" element={<div>Saved Searches</div>} />
+  </Routes>
+);
+
+const SellerRoutes = ({ user }) => (
+  <Routes>
+    <Route path="/list" element={<div>List Property Form</div>} />
+    <Route path="/listings" element={<div>My Listings</div>} />
+    <Route path="/progress" element={<div>Sale Progress</div>} />
+  </Routes>
+);
+
+const AgentRoutes = ({ user }) => (
+  <Routes>
+    <Route path="/jobs" element={<div>Verification Jobs</div>} />
+    <Route path="/listings" element={<div>Agent Listings</div>} />
+    <Route path="/clients" element={<div>Client Management</div>} />
+    <Route path="/earnings" element={<div>Earnings Dashboard</div>} />
+  </Routes>
+);
+
+const SurveyorRoutes = ({ user }) => (
+  <Routes>
+    <Route path="/requests" element={<div>Survey Requests</div>} />
+    <Route path="/portfolio" element={<div>Portfolio</div>} />
+    <Route path="/schedule" element={<div>Schedule</div>} />
+  </Routes>
+);
+
+const DeveloperRoutes = ({ user }) => (
+  <Routes>
+    <Route path="/projects" element={<div>Projects</div>} />
+    <Route path="/team" element={<div>Team Management</div>} />
+    <Route path="/analytics" element={<div>Analytics Dashboard</div>} />
+  </Routes>
+);
+
+const DealInitiatorRoutes = ({ user }) => (
+  <Routes>
+    <Route path="/hub" element={<div>Coordination Hub</div>} />
+    <Route path="/deals" element={<div>Active Deals</div>} />
+    <Route path="/commission" element={<div>Commission Tracking</div>} />
+  </Routes>
+);
+
+export default App;
+```
+
+## 📋 Prompt to Paste into Replit AI Sandbox
+
+```
+I need to build a complete AGIS real estate platform with the following requirements:
+
+1. BUTTON SYSTEM: Create a comprehensive button system with primary, secondary, success, danger, ghost, and outline variants in different sizes (xs, sm, md, lg). Include icon support and loading states.
+
+2. ROLE-BASED NAVIGATION: Implement navigation for 6 user types: Buyer, Seller, Agent, Surveyor, Estate Developer, and Deal Initiator. Each role should see role-specific menu items plus general items (Marketplace, Dashboard, Messages, Notifications).
+
+3. ICON-BASED UI: Use lucide-react icons throughout. All navigation should be icon-based with labels.
+
+4. SHARED MARKETPLACE: Every user must be able to access the general property marketplace regardless of role.
+
+5. SEED DATA SYSTEM: Create a seed database with pre-populated users for all 6 roles. No authentication required - users should be able to switch roles instantly to test different dashboards.
+
+6. SYSTEM DESIGN: Implement the secure verification workflow where:
+   - Buyer pays platform for verification
+   - Agent sees limited info (only deal initiator contact)
+   - Deal Initiator sees full buyer and agent details
+   - No direct buyer-agent contact until coordinated
+   - Platform holds commission
+
+7. RESPONSIVE DESIGN: Mobile-friendly with bottom navigation on mobile, sidebar on desktop.
+
+Please create the following components:
+1. Button.jsx - Complete button system with all variants
+2. Navigation.jsx - Main navigation with role switching
+3. seedDatabase.js - Mock data for all users and properties
+4. App.jsx - Main app with routing and role management
+5. Basic page components for Marketplace, Dashboard, etc.
+
+Use React with Tailwind CSS. Focus on clean, professional UI with AGIS brand colors (primary: #2563eb). Implement the information segmentation logic in the navigation and data flow.
+```
+
+## 🚀 Quick Start Instructions
+
+1. **Copy the code** for each component into respective files in your Replit project
+2. **Install required packages**:
+```bash
+npm install lucide-react react-router-dom
+```
+3. **Add Tailwind CSS** if not already installed
+4. **Run the app** and use the role switcher in the top-right to test all user dashboards
+
+The system includes:
+- ✅ Complete button system with all variants
+- ✅ Role-based navigation with icons
+- ✅ Seed database for instant testing
+- ✅ Secure information segmentation logic
+- ✅ Responsive mobile/desktop design
+- ✅ Marketplace accessible to all users
+- ✅ No authentication required for testing
+
+You can now test every user role's dashboard instantly by clicking the role switcher in the header!
