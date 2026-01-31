@@ -41,6 +41,7 @@ const Navigation = () => {
       { name: 'Verification', path: '/buyer/verifications', icon: Shield },
     ],
     AGENT: [
+      { name: 'Dashboard', path: '/agent/dashboard', icon: Activity },
       { name: 'Jobs', path: '/agent/jobs', icon: ShieldCheck, badge: 5 },
       { name: 'Listings', path: '/agent/listings', icon: Building },
       { name: 'Earnings', path: '/agent/earnings', icon: Wallet },

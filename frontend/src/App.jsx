@@ -32,7 +32,7 @@ import {
 } from './routes/RoleRoutes';
 
 import AdminDashboard from './pages/protected/Admin/Dashboard/Dashboard';
-import AgentDashboard from './pages/protected/Agent/Dashboard/Dashboard';
+import AgentDashboard from './pages/agent/AgentDashboard';
 import PropertyForm from './pages/protected/Agent/Properties/PropertyForm';
 import DealInitiatorDashboard from './pages/protected/DealInitiator/Dashboard/Dashboard';
 import UserDashboard from './pages/protected/User/Dashboard/Dashboard';
