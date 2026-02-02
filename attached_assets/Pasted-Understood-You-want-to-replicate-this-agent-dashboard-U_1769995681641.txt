@@ -1,0 +1,257 @@
+Understood. You want to replicate this agent dashboard UI exactly (layout, hierarchy, colors, cards, metrics) for your own Agent Dashboard.
+
+Below is a production-ready UI blueprint you can directly use. I’ll give you:
+
+1. UI structure breakdown (what components exist)
+
+
+2. Exact styling system (colors, spacing, typography)
+
+
+3. React + Tailwind implementation (clean & reusable)
+
+
+4. Notes to achieve pixel-level accuracy
+
+
+
+
+---
+
+1. Dashboard UI Structure (from your image)
+
+AgentDashboard
+├── AgentHeader
+│   ├── Avatar
+│   ├── Name + Certification
+│   ├── Rating + Reviews
+│   ├── Location
+│   ├── Elite Badge
+│   └── Trust Score Indicator
+│
+├── MetricsCards (4 cards)
+│   ├── Active Jobs
+│   ├── Monthly Earnings
+│   ├── Trust Score
+│   └── Verified Listings
+│
+├── DashboardTabs
+│   ├── Active Jobs (default)
+│   ├── Available Jobs
+│   ├── Performance
+│   └── My Listings
+│
+├── RecentJobRequests (List)
+│   └── JobCard × N
+│
+├── QuickActions
+│   ├── Response Time
+│   └── Completion Rate
+│
+└── PaymentNotifications
+
+
+---
+
+2. Styling System (Exact Look & Feel)
+
+Color Palette (Matched to Image)
+
+Primary Green:   #2E7D32
+Light Green:     #E8F5E9
+Accent Green:    #43A047
+Warning Orange:  #FB8C00
+Info Blue:       #1E88E5
+Success Green:   #388E3C
+Text Dark:       #263238
+Muted Text:      #607D8B
+Card Border:     #E0E0E0
+Background:      #F9FAFB
+
+Typography
+
+Headings: Semi-Bold
+
+Metrics Numbers: Bold, Large
+
+Labels: Small, Muted
+
+Font size range: 12px – 24px
+
+
+
+---
+
+3. React + Tailwind Dashboard (Exact Layout)
+
+AgentDashboard.jsx
+
+export default function AgentDashboard() {
+  return (
+    <div className="bg-gray-50 min-h-screen p-6">
+      <AgentHeader />
+      <Metrics />
+      <DashboardTabs />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <RecentJobs className="lg:col-span-2" />
+        <SidePanel />
+      </div>
+    </div>
+  );
+}
+
+
+---
+
+AgentHeader.jsx
+
+function AgentHeader() {
+  return (
+    <div className="bg-green-700 text-white rounded-xl p-6 flex justify-between items-center">
+      <div className="flex items-center gap-4">
+        <div className="w-14 h-14 bg-white rounded-full" />
+        <div>
+          <h2 className="text-xl font-semibold">Chinedu Okoro</h2>
+          <p className="text-sm opacity-90">
+            Certified AGIS Agent · ABJ-AGIS-2847
+          </p>
+          <div className="text-sm flex gap-2 mt-1">
+            ⭐ 4.9/5.0 (128 reviews) · Abuja, Nigeria
+          </div>
+        </div>
+      </div>
+
+      <div className="text-right">
+        <span className="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-semibold">
+          ELITE TIER
+        </span>
+        <p className="text-3xl font-bold mt-2">94</p>
+        <p className="text-sm opacity-80">Trust Score</p>
+      </div>
+    </div>
+  );
+}
+
+
+---
+
+Metrics.jsx
+
+function MetricCard({ title, value, sub }) {
+  return (
+    <div className="bg-white border rounded-xl p-4">
+      <p className="text-sm text-gray-500">{title}</p>
+      <h3 className="text-2xl font-bold text-green-700">{value}</h3>
+      <p className="text-xs text-green-600 mt-1">{sub}</p>
+    </div>
+  );
+}
+
+function Metrics() {
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+      <MetricCard title="Active Jobs" value="8" sub="+2 this week" />
+      <MetricCard title="Monthly Earnings" value="₦330K" sub="+25% from last month" />
+      <MetricCard title="Trust Score" value="94/100" sub="+4 points" />
+      <MetricCard title="Verified Listings" value="15" sub="3 pending" />
+    </div>
+  );
+}
+
+
+---
+
+RecentJobs.jsx
+
+function JobCard({ name, amount, service, status, priority }) {
+  return (
+    <div className="border rounded-lg p-4 flex justify-between items-center">
+      <div>
+        <h4 className="font-semibold">{name}</h4>
+        <p className="text-sm text-gray-500">{service}</p>
+        <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block
+          ${priority === "High" ? "bg-orange-100 text-orange-700" :
+            priority === "Medium" ? "bg-blue-100 text-blue-700" :
+            "bg-green-100 text-green-700"}`}>
+          {status} · {priority}
+        </span>
+      </div>
+      <div className="text-right">
+        <p className="font-bold text-green-700">₦{amount}</p>
+        <button className="text-sm text-green-600 hover:underline">
+          View Details
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function RecentJobs() {
+  return (
+    <div className="bg-white rounded-xl p-5">
+      <h3 className="font-semibold mb-4">Recent Job Requests</h3>
+      <div className="space-y-4">
+        <JobCard name="John Adebayo" amount="15,000" service="C-of-O Verification" status="In-progress" priority="High" />
+        <JobCard name="Sarah Johnson" amount="25,000" service="Property Documentation" status="Pending" priority="Medium" />
+        <JobCard name="Michael Chen" amount="10,000" service="AGIS Record Search" status="Completed" priority="Low" />
+        <JobCard name="Grace Okafor" amount="18,000" service="Survey Plan Verification" status="In-progress" priority="High" />
+      </div>
+    </div>
+  );
+}
+
+
+---
+
+SidePanel.jsx
+
+function SidePanel() {
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl p-4">
+        <h4 className="font-semibold">Response Time</h4>
+        <p className="text-2xl font-bold text-green-700">2.1h</p>
+        <p className="text-xs text-gray-500">Faster than 85% of agents</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-4">
+        <h4 className="font-semibold">Completion Rate</h4>
+        <p className="text-2xl font-bold text-green-700">98%</p>
+        <p className="text-xs text-gray-500">49/50 jobs completed</p>
+      </div>
+
+      <div className="bg-white rounded-xl p-4">
+        <h4 className="font-semibold">Payment Notifications</h4>
+        <p className="text-green-700 font-bold mt-2">₦17,000 Received</p>
+        <button className="mt-3 w-full bg-green-700 text-white py-2 rounded-lg">
+          Pay Platform Fee
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+---
+
+4. How to Make It Exactly Like the Image
+
+Use 8px spacing system
+
+Card radius: 12–16px
+
+Avoid shadows → use borders
+
+Green accents only for numbers & CTAs
+
+Keep white space (don’t overcrowd)
+
+
+
+---
+
+If you want next:
+
+✅ MongoDB-driven data ✅ Role-based agent/admin view ✅ Mobile-responsive version ✅ Figma file ✅ Dark mode
+
+Tell me what you want next and your stack (React / Next.js / Vue).

@@ -1,200 +1,200 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
-  Shield, TrendingUp, Wallet, Star, Clock, 
-  CheckCircle, Briefcase, ChevronRight, AlertCircle,
-  LayoutDashboard, Users, FileText, Settings, LogOut,
-  Search, Bell
+  Shield, Star, MapPin, Briefcase, Wallet, 
+  CheckCircle, Clock, Bell, ChevronRight, 
+  Activity, TrendingUp, AlertCircle
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import './AgentDashboard.css';
 
 const AgentDashboard = () => {
-  const { user, logout } = useAuth();
-  const location = useLocation();
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('active');
 
   const stats = [
-    { label: 'Trust Score', value: '94/100', change: '+4 points', icon: Shield, color: 'text-blue-600', accent: '#3b82f6' },
-    { label: 'Active Jobs', value: '8', change: '+2 this week', icon: Briefcase, color: 'text-purple-600', accent: '#8b5cf6' },
-    { label: 'Monthly Earnings', value: '₦330K', change: '+25% from last month', icon: Wallet, color: 'text-green-600', accent: '#10b981' },
-    { label: 'Verified Listings', value: '15', change: '3 pending', icon: CheckCircle, color: 'text-indigo-600', accent: '#6366f1' },
+    { title: 'Active Jobs', value: '8', sub: '+2 this week' },
+    { title: 'Monthly Earnings', value: '₦330K', sub: '+25% from last month' },
+    { title: 'Trust Score', value: '94/100', sub: '+4 points' },
+    { title: 'Verified Listings', value: '15', sub: '3 pending' },
   ];
 
-  const recentJobs = [
-    { id: 1, client: 'John Adebayo', amount: '₦15,000', type: 'C-of-O Verification', status: 'In-progress', priority: 'High', time: '2 hours ago' },
-    { id: 2, client: 'Sarah Johnson', amount: '₦25,000', type: 'Property Documentation', status: 'Pending', priority: 'Medium', time: '1 day ago' },
-    { id: 3, client: 'Michael Chen', amount: '₦10,000', type: 'AGIS Record Search', status: 'Completed', priority: 'Low', time: '2 days ago' },
-    { id: 4, client: 'Grace Okafor', amount: '₦18,000', type: 'Survey Plan Verification', status: 'In-progress', priority: 'High', time: '3 days ago' },
-  ];
-
-  const sidebarLinks = [
-    { name: 'Overview', path: '/agent/dashboard', icon: LayoutDashboard },
-    { name: 'Active Jobs', path: '/agent/jobs', icon: Briefcase },
-    { name: 'Listings', path: '/agent/listings', icon: Search },
-    { name: 'Clients', path: '/agent/clients', icon: Users },
-    { name: 'Reports', path: '/agent/reports', icon: FileText },
-    { name: 'Settings', path: '/agent/settings', icon: Settings },
-  ];
+  const jobs = {
+    active: [
+      { id: 1, name: 'John Adebayo', amount: '15,000', service: 'C-of-O Verification', status: 'In-progress', priority: 'High' },
+      { id: 2, name: 'Sarah Johnson', amount: '25,000', service: 'Property Documentation', status: 'Pending', priority: 'Medium' },
+    ],
+    available: [
+      { id: 3, name: 'Michael Chen', amount: '10,000', service: 'AGIS Record Search', status: 'Available', priority: 'Low' },
+      { id: 4, name: 'Grace Okafor', amount: '18,000', service: 'Survey Plan Verification', status: 'Available', priority: 'High' },
+    ],
+    completed: [
+      { id: 5, name: 'David Wilson', amount: '12,000', service: 'Deed Registration', status: 'Completed', priority: 'Medium' },
+    ]
+  };
 
   return (
-    <div className="agent-dashboard-wrapper">
-      {/* Fixed Sidebar */}
-      <aside className="agent-sidebar">
-        <div className="agent-sidebar-brand">
-          <Shield size={32} className="text-blue-500" />
-          <span className="text-xl font-bold">DigiAGIS</span>
-        </div>
-        
-        <div className="flex-1 space-y-1">
-          {sidebarLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              to={link.path} 
-              className={`agent-sidebar-link ${location.pathname === link.path ? 'active' : ''}`}
-            >
-              <link.icon size={20} />
-              <span>{link.name}</span>
-            </Link>
-          ))}
-        </div>
-
-        <button 
-          onClick={logout}
-          className="agent-sidebar-link mt-auto text-red-400 hover:bg-red-500/10 hover:text-red-500"
-        >
-          <LogOut size={20} />
-          <span>Sign Out</span>
-        </button>
-      </aside>
-
-      {/* Flexible Main Content */}
-      <main className="agent-main-content">
-        {/* Header Section */}
-        <header className="flex justify-between items-center mb-8">
+    <div className="dashboard-container p-4 md:p-8">
+      {/* Agent Header Section */}
+      <div className="agent-header-banner mb-8">
+        <div className="flex items-center gap-6">
+          <div className="avatar-placeholder">
+            {user?.fullName?.charAt(0) || 'C'}
+          </div>
           <div>
-            <h1 className="text-2xl font-bold">Welcome back, Chinedu!</h1>
-            <p className="text-gray-500 text-sm flex items-center gap-2 mt-1">
-              <span className="status-indicator status-online"></span>
-              Online & Ready for new jobs • ABJ-AGIS-2847
+            <h2 className="text-2xl font-bold">Chinedu Okoro</h2>
+            <p className="text-sm opacity-90 font-medium">
+              Certified AGIS Agent • <span className="font-mono">ABJ-AGIS-2847</span>
             </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="p-2 rounded-full hover:bg-gray-100 text-gray-500 relative">
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
-            <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
-              CO
+            <div className="flex items-center gap-3 mt-2 text-sm">
+              <span className="flex items-center gap-1 text-yellow-300 font-bold">
+                <Star size={14} className="fill-current" /> 4.9/5.0
+              </span>
+              <span className="opacity-80">(128 reviews)</span>
+              <span className="flex items-center gap-1 opacity-90">
+                <MapPin size={14} /> Abuja, Nigeria
+              </span>
             </div>
           </div>
-        </header>
-
-        {/* Modular Stat Cards */}
-        <div className="agent-stats-container">
-          {stats.map((stat, idx) => (
-            <div key={idx} className="agent-stat-card" style={{ borderLeftColor: stat.accent }}>
-              <div className="flex justify-between items-start mb-4">
-                <div className="p-3 rounded-xl bg-gray-50 text-gray-600">
-                  <stat.icon size={24} />
-                </div>
-                <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full uppercase">
-                  {stat.change}
-                </span>
-              </div>
-              <p className="text-gray-500 text-xs font-bold uppercase tracking-wider">{stat.label}</p>
-              <h3 className="text-2xl font-bold mt-1">{stat.value}</h3>
-            </div>
-          ))}
         </div>
 
-        {/* Main Grid Content */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Job Queue */}
-          <section className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-              <h2 className="text-lg font-bold">Recent Job Requests</h2>
-              <Link to="/agent/jobs" className="text-blue-600 text-sm font-semibold hover:underline">View Queue</Link>
-            </div>
-            <div className="divide-y divide-gray-50">
-              {recentJobs.map((job) => (
-                <div key={job.id} className="p-6 hover:bg-gray-50 transition-colors flex items-center justify-between group">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      job.status === 'Completed' ? 'bg-green-50 text-green-600' : 'bg-blue-50 text-blue-600'
-                    }`}>
-                      <FileText size={24} />
-                    </div>
-                    <div>
-                      <p className="font-bold">{job.client}</p>
-                      <p className="text-xs text-gray-500">{job.type} • {job.priority} Priority</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-8">
-                    <div className="text-right hidden sm:block">
-                      <p className="font-bold">{job.amount}</p>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase">{job.time}</p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      job.status === 'Completed' ? 'bg-green-100 text-green-700' : 
-                      job.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700'
-                    }`}>
-                      {job.status}
-                    </span>
-                    <ChevronRight size={20} className="text-gray-300 group-hover:text-blue-500 transition-transform group-hover:translate-x-1" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Performance Sidebar */}
-          <aside className="space-y-6">
-            <div className="bg-[#1e293b] rounded-2xl p-6 text-white shadow-xl shadow-slate-200">
-              <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-                <TrendingUp size={20} className="text-blue-400" />
-                Performance Metrics
-              </h2>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Response Rate</span>
-                    <span className="font-bold">2.1h</span>
-                  </div>
-                  <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full" style={{ width: '85%' }}></div>
-                  </div>
-                  <p className="text-[10px] text-slate-500 italic">Faster than 85% of peers</p>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Completion Rate</span>
-                    <span className="font-bold">98%</span>
-                  </div>
-                  <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 rounded-full" style={{ width: '98%' }}></div>
-                  </div>
-                  <p className="text-[10px] text-slate-500 italic">49 out of 50 jobs completed</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h2 className="text-sm font-bold mb-4 uppercase tracking-widest text-gray-400">Urgent Notifications</h2>
-              <div className="space-y-3">
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-center gap-3">
-                  <AlertCircle size={18} className="text-red-500 shrink-0" />
-                  <p className="text-xs font-semibold text-red-700">2 jobs expiring in less than 24 hours</p>
-                </div>
-                <div className="p-4 rounded-xl bg-orange-50 border border-orange-100 flex items-center gap-3">
-                  <Clock size={18} className="text-orange-500 shrink-0" />
-                  <p className="text-xs font-semibold text-orange-700">3 new inquiries waiting response</p>
-                </div>
-              </div>
-            </div>
-          </aside>
+        <div className="text-right">
+          <span className="elite-badge">ELITE TIER</span>
+          <p className="text-4xl font-black mt-2">94</p>
+          <p className="text-xs uppercase font-bold tracking-widest opacity-80">Trust Score</p>
         </div>
-      </main>
+      </div>
+
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map((stat, i) => (
+          <div key={i} className="metric-card">
+            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">{stat.title}</p>
+            <h3 className="text-2xl font-bold text-[#2E7D32]">{stat.value}</h3>
+            <p className="text-[11px] text-green-600 font-bold mt-1">{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="flex border-b border-gray-200 mb-6 overflow-x-auto no-scrollbar">
+        {['active', 'available', 'completed', 'listings'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`tab-btn capitalize whitespace-nowrap ${activeTab === tab ? 'active' : ''}`}
+          >
+            {tab.replace('-', ' ')} {tab !== 'listings' ? 'Jobs' : ''}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Content Area */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="bg-white rounded-xl p-6 border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-800 mb-6 flex items-center justify-between">
+              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Job Requests
+              <span className="text-xs text-blue-600 hover:underline cursor-pointer">View All</span>
+            </h3>
+            
+            <div className="space-y-4">
+              {(jobs[activeTab] || []).length > 0 ? (
+                jobs[activeTab].map((job) => (
+                  <div key={job.id} className="job-card flex justify-between items-center group">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-lg ${
+                        job.priority === 'High' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'
+                      }`}>
+                        <Briefcase size={20} />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900">{job.name}</h4>
+                        <p className="text-xs text-gray-500 font-medium">{job.service}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className={`status-pill ${
+                            job.priority === 'High' ? 'bg-orange-100 text-orange-700' :
+                            job.priority === 'Medium' ? 'bg-blue-100 text-blue-700' :
+                            'bg-green-100 text-green-700'
+                          }`}>
+                            {job.status} • {job.priority} Priority
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right flex flex-col items-end gap-2">
+                      <p className="text-lg font-black text-[#2E7D32]">₦{job.amount}</p>
+                      <button className="text-xs font-bold text-[#2E7D32] hover:underline flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        Details <ChevronRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-12 text-center">
+                  <Activity size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500 font-medium">No {activeTab} jobs found</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Side Panel Area */}
+        <div className="space-y-6">
+          <div className="side-panel-card">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <Clock size={16} className="text-[#2E7D32]" /> Response Time
+              </h4>
+              <TrendingUp size={16} className="text-green-600" />
+            </div>
+            <p className="text-3xl font-black text-[#2E7D32]">2.1h</p>
+            <div className="mt-4 space-y-2">
+              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-full bg-[#2E7D32]" style={{ width: '85%' }}></div>
+              </div>
+              <p className="text-[10px] text-gray-500 font-bold italic">Faster than 85% of active agents</p>
+            </div>
+          </div>
+
+          <div className="side-panel-card">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-gray-800 text-sm flex items-center gap-2">
+                <CheckCircle size={16} className="text-[#2E7D32]" /> Completion Rate
+              </h4>
+              <Star size={16} className="text-yellow-500" />
+            </div>
+            <p className="text-3xl font-black text-[#2E7D32]">98%</p>
+            <div className="mt-4 space-y-2">
+              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-full bg-[#388E3C]" style={{ width: '98%' }}></div>
+              </div>
+              <p className="text-[10px] text-gray-500 font-bold italic">49/50 jobs completed successfully</p>
+            </div>
+          </div>
+
+          <div className="side-panel-card bg-[#E8F5E9] border-none">
+            <h4 className="font-bold text-[#2E7D32] text-sm flex items-center gap-2">
+              <Bell size={16} /> Payment Alerts
+            </h4>
+            <div className="mt-4 p-4 bg-white rounded-lg shadow-sm">
+              <div className="flex justify-between items-center">
+                <span className="text-xs font-bold text-gray-500 uppercase">Received</span>
+                <span className="text-lg font-black text-[#2E7D32]">₦17,000</span>
+              </div>
+              <p className="text-[10px] text-gray-400 mt-1">Pending Platform Fee: ₦1,700</p>
+              <button className="btn-primary-green mt-4 text-xs">
+                Pay Platform Fee
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-4 rounded-xl bg-orange-50 border border-orange-100 flex items-center gap-3">
+            <AlertCircle size={20} className="text-orange-500" />
+            <p className="text-xs font-bold text-orange-700">You have 3 new job inquiries waiting for response!</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
