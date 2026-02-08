@@ -70,3 +70,33 @@ This will run the backend tests in-band against the local MongoDB instance so DB
 - To simulate a successful payment during local development, call POST `/api/payment/simulate/:verificationId/complete` as the buyer; this will mark the verification as paid, set a 12-hour reservation, and mark the associated property as `reserved`.
 - The Monnify webhook (`POST /api/payment/monnify/webhook`) will also set reservation and property status on real payments.
 - A reservation cleaner runs in the backend (default every 1 minute in dev) and expires reservations that pass their `reservedUntil` timestamp without admin approval; those verifications become `expired` and the property status returns to `available`.
+
+## Deploying with Vercel (frontend) + Render (backend API)
+
+Recommended split deployment for best stability:
+
+1. Deploy backend on Render (API only)
+   - Use `render.yaml` in this repo (builds backend only).
+   - Set required secrets in Render:
+     - `MONGODB_URI`, `JWT_SECRET`, `ENCRYPTION_KEY`
+   - Set frontend origin for CORS:
+     - `FRONTEND_URL=https://<your-vercel-domain>`
+     - or `CORS_ORIGINS=https://<your-vercel-domain>,https://<custom-domain>`
+   - Keep `SERVE_FRONTEND=false` (frontend is hosted on Vercel).
+
+2. Deploy frontend on Vercel
+   - Root directory: `frontend`
+   - Build command: `npm run build`
+   - Output directory: `dist`
+   - Set env vars in Vercel Project Settings:
+     - `VITE_API_URL=https://<your-render-service>.onrender.com/api`
+     - `VITE_SOCKET_URL=https://<your-render-service>.onrender.com`
+
+3. Smoke test after deploy
+   - Backend health: `https://<render-service>.onrender.com/api/health`
+   - Frontend: `https://<vercel-project>.vercel.app`
+   - Validate flows:
+     - Register/Login
+     - Marketplace loads
+     - Property details opens (`/property/:id`)
+     - Verification request posts successfully

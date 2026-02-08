@@ -34,6 +34,12 @@ export default {
         // Monnify webhook age protection (seconds)
         MONNIFY_WEBHOOK_MAX_AGE_SECONDS: parseInt(process.env.MONNIFY_WEBHOOK_MAX_AGE_SECONDS, 10) || 86400,
   
+
+        // Frontend / CORS
+        FRONTEND_URL: process.env.FRONTEND_URL,
+        CORS_ORIGINS: process.env.CORS_ORIGINS,
+        SERVE_FRONTEND: process.env.SERVE_FRONTEND === 'true',
+
         // Storage
         CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
         CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,

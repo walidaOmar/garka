@@ -13,9 +13,30 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
+
+const defaultAllowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5000',
+  'https://localhost:5173'
+];
+
+const configuredOrigins = (env.CORS_ORIGINS || env.FRONTEND_URL || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+const allowedOrigins = configuredOrigins.length > 0 ? configuredOrigins : defaultAllowedOrigins;
+
 app.use(cors({
-        origin: '*', 
-        credentials: true
+  origin(origin, callback) {
+    // Allow non-browser requests (no origin header)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true
 }));
 
 // Rate limiting
@@ -51,7 +72,7 @@ app.use('/api', apiRoutes);
 import path from 'path';
 import fs from 'fs';
 
-if (env.NODE_ENV === 'production') {
+if (env.NODE_ENV === 'production' && env.SERVE_FRONTEND) {
   const frontendBuildCandidates = [
     path.resolve(process.cwd(), 'frontend', 'dist'),
     path.resolve(process.cwd(), '..', 'frontend', 'dist'),

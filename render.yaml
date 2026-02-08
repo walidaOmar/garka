@@ -3,8 +3,8 @@ services:
     name: garka-backend
     env: node
     plan: free
-    buildCommand: npm run build
-    startCommand: npm start
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: MONGODB_URI
         sync: false
@@ -16,6 +16,12 @@ services:
         sync: false
       - key: NODE_ENV
         value: production
+      - key: SERVE_FRONTEND
+        value: "false"
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
       - key: MONNIFY_SANDBOX
         value: "false"
       - key: MONNIFY_AUTO_PAYOUT
