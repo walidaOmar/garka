@@ -34,7 +34,8 @@ app.use(cors({
 
     if (allowedOrigins.includes(origin)) return callback(null, true);
 
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
+    logger.warn(`CORS blocked for origin: ${origin}`);
+    return callback(null, false);
   },
   credentials: true
 }));
@@ -84,12 +85,12 @@ if (env.NODE_ENV === 'production' && env.SERVE_FRONTEND) {
   if (!frontendBuildPath) {
     logger.warn(`Frontend build not found. Checked: ${frontendBuildCandidates.join(', ')}`);
   } else {
-  app.use(express.static(frontendBuildPath));
-  
-  // SPA fallback for non-API GET routes (Express 5 safe matcher)
-  app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(path.join(frontendBuildPath, 'index.html'));
-  });
+    app.use(express.static(frontendBuildPath));
+
+    // SPA fallback for non-API GET routes (Express 5 safe matcher)
+    app.get(/^(?!\/api).*/, (req, res) => {
+      res.sendFile(path.join(frontendBuildPath, 'index.html'));
+    });
   }
 }
 
