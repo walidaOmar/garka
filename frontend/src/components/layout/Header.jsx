@@ -57,11 +57,13 @@ const Header = () => {
   const handleDashboard = () => {
     const role = user.userType || user.role;
     if (role === 'agent' || role === 'AGENT') {
-      navigate('/agent-dashboard');
+      navigate('/agent/dashboard');
     } else if (role === 'admin' || role === 'ADMIN') {
       navigate('/admin/dashboard');
-    } else if (role === 'DEAL_INITIATOR') {
-      navigate('/deal-initiator-dashboard');
+    } else if (role === 'DEAL_INITIATOR' || role === 'deal_initiator') {
+      navigate('/di/dashboard');
+    } else {
+      navigate('/dashboard');
     }
     handleClose();
   };
@@ -157,7 +159,7 @@ const Header = () => {
                 <ListItemIcon><VerifiedUser /></ListItemIcon>
                 <ListItemText primary="Home" />
               </ListItem>
-              {user && (user.userType === 'admin' || user.userType === 'agent') && (
+              {user && (user.userType === 'admin' || user.userType === 'agent' || user.role === 'ADMIN' || user.role === 'AGENT' || user.role === 'DEAL_INITIATOR') && (
                 <ListItem button onClick={handleDashboard}>
                   <ListItemIcon><Dashboard /></ListItemIcon>
                   <ListItemText primary="Dashboard" />
