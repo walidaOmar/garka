@@ -41,12 +41,12 @@ import {
   Close,
   Phone,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import PaymentModal from '../../../components/verification/PaymentModal';
 import { useAuth } from '../../../contexts/AuthContext';
 
 console.log('Marketplace imports', { PaymentModal: !!PaymentModal, Box: !!Box, Grid: !!Grid, Card: !!Card });
 import verificationAPI from '../../../api/verification.js';
-import paymentsAPI from '../../../api/payments';
 
 // Tab panel component
 function TabPanel({ children, value, index, ...other }) {
@@ -66,6 +66,7 @@ function TabPanel({ children, value, index, ...other }) {
 const Marketplace = () => {
   console.log('Marketplace function executing');
   const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState('grid');
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
@@ -221,7 +222,7 @@ const Marketplace = () => {
         </IconButton>
       </Box>
 
-      <CardContent>
+        <CardContent>
         {/* Price */}
         <Typography variant="h5" fontWeight="bold" color="primary" gutterBottom>
           {formatPrice(property.price)}
@@ -306,9 +307,20 @@ const Marketplace = () => {
               ❤️ {property.likes}
             </Typography>
           </Box>
-        </Box>
-      </CardContent>
-    </Card>
+          </Box>
+
+          <Button
+            size="small"
+            sx={{ mt: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/property/${property.id}`);
+            }}
+          >
+            View Details
+          </Button>
+        </CardContent>
+      </Card>
   );
 
   const PropertyDetailModal = ({ property, open, onClose }) => {

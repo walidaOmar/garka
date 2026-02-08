@@ -28,3 +28,17 @@ export const listProperties = async (req, res) => {
     return failure(res, 'Failed to list properties', 500);
   }
 };
+
+export const getPropertyById = async (req, res) => {
+  try {
+    const property = await LandProperty.findById(req.params.id)
+      .populate('agentId', 'user organizationName profileImage')
+      .populate({ path: 'agentId', populate: { path: 'user', select: 'fullName email phone' } });
+
+    if (!property) return failure(res, 'Property not found', 404);
+
+    return success(res, { property }, 'Property retrieved');
+  } catch (error) {
+    return failure(res, 'Failed to get property', 500);
+  }
+};
