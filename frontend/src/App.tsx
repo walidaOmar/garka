@@ -18,6 +18,9 @@ import Home from './pages/public/Home/Home';
 import Login from './pages/public/Login';
 import Register from './pages/public/Register';
 import Marketplace from './pages/public/Marketplace/Marketplace';
+import PropertyDetails from './pages/public/PropertyDetails/PropertyDetails';
+import VerifyAccount from './pages/public/VerifyAccount/VerifyAccount';
+import Unauthorized from './pages/public/Unauthorized/Unauthorized';
 import Profile from './pages/protected/Profile/Profile';
 import Verification from './pages/protected/Verification/Verification';
 import VerificationDetail from './pages/protected/Verification/VerificationDetail';
@@ -52,6 +55,15 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/property/:id" element={<PropertyDetails />} />
+                <Route path="/verify-account" element={<VerifyAccount />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
+
+                {/* Convenience dashboard alias based on role */}
+                <Route
+                  path="/dashboard"
+                  element={<RoleDashboardRedirect />}
+                />
 
                 {/* Protected */}
                 <Route element={<ProtectedRoute /> }>
@@ -74,6 +86,7 @@ function App() {
 
                 <Route element={<DealInitiatorRoute /> }>
                   <Route path="/deal-initiator/dashboard" element={<DealInitiatorDashboard />} />
+                  <Route path="/di/dashboard" element={<DealInitiatorDashboard />} />
                 </Route>
 
                 <Route element={<UserRoute /> }>
@@ -89,6 +102,19 @@ function App() {
       </AuthProvider>
     </ThemeProvider>
   );
+}
+
+function RoleDashboardRedirect() {
+  const stored = localStorage.getItem('garka_user');
+  const user = stored ? JSON.parse(stored) : null;
+
+  if (!user) return <Navigate to="/login" />;
+
+  if (user.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
+  if (user.role === 'AGENT') return <Navigate to="/agent/dashboard" replace />;
+  if (user.role === 'DEAL_INITIATOR') return <Navigate to="/di/dashboard" replace />;
+
+  return <Navigate to="/user/dashboard" replace />;
 }
 
 export default App;
