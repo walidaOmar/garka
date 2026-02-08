@@ -49,13 +49,9 @@ app.use('/api', apiRoutes);
 
 // Serve frontend in production
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 if (env.NODE_ENV === 'production') {
-  const frontendBuildPath = path.join(__dirname, '../frontend/dist');
+  const frontendBuildPath = path.join(process.cwd(), 'frontend', 'dist');
   app.use(express.static(frontendBuildPath));
   
   // Use a middleware to serve index.html for non-API routes

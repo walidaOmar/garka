@@ -1,0 +1,65 @@
+import React from 'react';
+import HomeOutlined from '@mui/icons-material/HomeOutlined';
+import SearchOutlined from '@mui/icons-material/SearchOutlined';
+import ShieldOutlined from '@mui/icons-material/ShieldOutlined';
+import ChatBubbleOutline from '@mui/icons-material/ChatBubbleOutline';
+import NotificationsNoneOutlined from '@mui/icons-material/NotificationsNoneOutlined';
+import LogoutOutlined from '@mui/icons-material/LogoutOutlined';
+import MenuOutlined from '@mui/icons-material/MenuOutlined';
+import CloseOutlined from '@mui/icons-material/CloseOutlined';
+import LoginOutlined from '@mui/icons-material/LoginOutlined';
+import PersonAddAltOutlined from '@mui/icons-material/PersonAddAltOutlined';
+import PaletteOutlined from '@mui/icons-material/PaletteOutlined';
+import ExpandMoreOutlined from '@mui/icons-material/ExpandMoreOutlined';
+import FavoriteBorderOutlined from '@mui/icons-material/FavoriteBorderOutlined';
+import StarBorderOutlined from '@mui/icons-material/StarBorderOutlined';
+import VerifiedUserOutlined from '@mui/icons-material/VerifiedUserOutlined';
+import ApartmentOutlined from '@mui/icons-material/ApartmentOutlined';
+import AccountBalanceWalletOutlined from '@mui/icons-material/AccountBalanceWalletOutlined';
+import PieChartOutlineOutlined from '@mui/icons-material/PieChartOutlineOutlined';
+import GroupOutlined from '@mui/icons-material/GroupOutlined';
+import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
+import TimelineOutlined from '@mui/icons-material/TimelineOutlined';
+import CheckCircleOutlineOutlined from '@mui/icons-material/CheckCircleOutlineOutlined';
+import PlaceOutlined from '@mui/icons-material/PlaceOutlined';
+import WorkOutlineOutlined from '@mui/icons-material/WorkOutlineOutlined';
+import AccessTimeOutlined from '@mui/icons-material/AccessTimeOutlined';
+import TrendingUpOutlined from '@mui/icons-material/TrendingUpOutlined';
+import WarningAmberOutlined from '@mui/icons-material/WarningAmberOutlined';
+import ChevronRightOutlined from '@mui/icons-material/ChevronRightOutlined';
+
+const wrap = (IconComp) => {
+  const WrappedIcon = ({ size = 20, className, ...props }) => (
+    <IconComp className={className} sx={{ fontSize: size }} {...props} />
+  );
+  return WrappedIcon;
+};
+
+export const Home = wrap(HomeOutlined);
+export const Search = wrap(SearchOutlined);
+export const Shield = wrap(ShieldOutlined);
+export const MessageSquare = wrap(ChatBubbleOutline);
+export const Bell = wrap(NotificationsNoneOutlined);
+export const LogOut = wrap(LogoutOutlined);
+export const Menu = wrap(MenuOutlined);
+export const X = wrap(CloseOutlined);
+export const LogIn = wrap(LoginOutlined);
+export const UserPlus = wrap(PersonAddAltOutlined);
+export const Palette = wrap(PaletteOutlined);
+export const ChevronDown = wrap(ExpandMoreOutlined);
+export const Heart = wrap(FavoriteBorderOutlined);
+export const Star = wrap(StarBorderOutlined);
+export const ShieldCheck = wrap(VerifiedUserOutlined);
+export const Building = wrap(ApartmentOutlined);
+export const Wallet = wrap(AccountBalanceWalletOutlined);
+export const PieChart = wrap(PieChartOutlineOutlined);
+export const Users = wrap(GroupOutlined);
+export const Settings = wrap(SettingsOutlined);
+export const Activity = wrap(TimelineOutlined);
+export const CheckCircle = wrap(CheckCircleOutlineOutlined);
+export const MapPin = wrap(PlaceOutlined);
+export const Briefcase = wrap(WorkOutlineOutlined);
+export const Clock = wrap(AccessTimeOutlined);
+export const TrendingUp = wrap(TrendingUpOutlined);
+export const AlertCircle = wrap(WarningAmberOutlined);
+export const ChevronRight = wrap(ChevronRightOutlined);
