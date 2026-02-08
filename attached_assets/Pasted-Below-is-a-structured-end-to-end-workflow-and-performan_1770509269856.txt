@@ -1,0 +1,296 @@
+Below is a **structured, end-to-end workflow and performance framework** you can directly use to **enhance the platform architecture, define frontend routing, and align team operations with sales success**. I am presenting this as a **product + system design document**, not code, so it can guide both engineering and operations.
+
+---
+
+## 1. Core Platform Workflow (User → Deal → Approval)
+
+### 1.1 Authentication Flow (Frontend Routes)
+
+**Purpose:** Control access and user state.
+
+**Routes**
+
+* `/login`
+* `/register`
+* `/verify-account`
+* `/dashboard`
+
+**Workflow**
+
+1. User registers
+2. Email/phone verification
+3. Successful verification → access marketplace
+4. Unverified users are restricted from requesting deals
+
+---
+
+## 2. Marketplace & Property Deal Flow
+
+### 2.1 Marketplace Listing
+
+**Route:** `/marketplace`
+
+Each **Property Card** contains:
+
+* Property image
+* Location
+* Price
+* Status (Available / Reserved / Expired)
+* Deal Initiator (DI) summary badge
+
+---
+
+### 2.2 Property Details Page
+
+**Route:** `/property/:id`
+
+**Displayed Information**
+
+* Full property details
+* Deal Initiator (DI) Info:
+
+  * Full name
+  * Phone number (click-to-call)
+  * Email
+  * Rank (Bronze / Silver / Gold)
+* Agent assigned (if any)
+
+**Primary CTA**
+
+* **Request Property**
+
+---
+
+## 3. Payment & Reservation Logic
+
+### 3.1 Request → Payment Modal
+
+When user clicks **Request Property**:
+
+* Payment component pops up
+* User completes payment successfully
+
+### 3.2 Reservation Timer Logic
+
+After successful payment:
+
+* Property status = **Reserved**
+* **12-hour countdown starts**
+* Timer visible on:
+
+  * Property card
+  * DI dashboard
+  * Admin dashboard
+
+**Business Rule**
+
+* Within 12 hours:
+
+  * Deal Initiator must **claim**
+  * Agent must initiate documentation
+* If expired:
+
+  * Property auto-reverts to Available
+  * Performance penalty applies
+
+---
+
+## 4. Deal Claim & Approval Workflow
+
+### 4.1 Deal Initiator (DI) Claim
+
+**Route:** `/di/deals`
+
+DI actions:
+
+* Claim deal
+* Contact agent
+* Upload preliminary documentation
+
+**Failure Condition**
+
+* If DI does not claim before expiration → **Poor Performance flag**
+
+---
+
+### 4.2 Agent Role & Communication
+
+**Key Rule:**
+Agents **do NOT see buyer details** directly.
+
+**Agent Capabilities**
+
+* Communicate only with Deal Initiator
+* Handle:
+
+  * Verification
+  * Documentation
+  * Consultation
+* Update job status
+
+---
+
+### 4.3 Admin Approval
+
+**Route:** `/admin/deals`
+
+Admin responsibilities:
+
+* Review documentation
+* Approve or reject deal
+* Finalize deal closure
+* Release commissions
+
+---
+
+## 5. Performance & Trust Scoring System
+
+This is critical for **platform intelligence and growth control**.
+
+---
+
+## 6. Agent Performance Matrix (Trust Score = 100%)
+
+**Metrics (Equal Weight)**
+
+| Metric        | Description                         |
+| ------------- | ----------------------------------- |
+| Verification  | Successful user verification        |
+| Documentation | Accurate & timely document handling |
+| Active Jobs   | Number of active deals              |
+| Consultation  | Client interaction quality          |
+
+**Formula**
+
+```
+Trust Score (%) =
+(Verification + Documentation + Active Jobs + Consultation) / 4
+```
+
+**Purpose**
+
+* Controls agent visibility
+* Determines eligibility for high-value deals
+* Influences system trust ranking
+
+---
+
+## 7. Deal Initiator (DI) Performance Matrix (MVP)
+
+**Core KPIs**
+
+| Metric            | Description         |
+| ----------------- | ------------------- |
+| Total Deals       | Deals initiated     |
+| Successful Deals  | Closed deals        |
+| Pending Deals     | Ongoing             |
+| Avg Response Time | Call answer speed   |
+| Monthly Target    | 6 deals minimum     |
+| Total Earnings    | Commission          |
+| Success Rate      | Overall performance |
+
+---
+
+### DI Rank System
+
+| Success Rate | Rank   |
+| ------------ | ------ |
+| 75%          | Bronze |
+| 85%          | Silver |
+| 95–100%      | Gold   |
+
+**Impact**
+
+* Rank badge on property
+* Higher trust for buyers
+* Priority deal assignment
+
+---
+
+## 8. Admin Performance & Growth Dashboard
+
+### Admin MVP Metrics
+
+| Metric          | Description       |
+| --------------- | ----------------- |
+| Total Users     | Platform adoption |
+| Total Agents    | Workforce size    |
+| Verified Agents | Trust quality     |
+| Deals Closed    | Platform success  |
+| Revenue         | Gross             |
+| Platform Fees   | Net income        |
+| Admin Earnings  | Profit            |
+
+---
+
+### Growth Indicators
+
+* User growth rate
+* Agent performance tiers
+* Revenue growth curve
+* Conversion rate (Request → Closed)
+
+---
+
+## 9. Sales Force Storytelling Framework
+
+Each department must understand **how the product sells itself**.
+
+### Product Story (Sales Force)
+
+1. User pain (property access)
+2. Marketplace transparency
+3. Trusted agents & DI ranks
+4. Secure payment
+5. Time-bound accountability
+6. Admin-verified closure
+
+---
+
+### Success Stage Workflow (Sales Enablement)
+
+1. Lead acquisition
+2. Property request
+3. Payment
+4. DI claim
+5. Agent documentation
+6. Admin approval
+7. Deal closed → earnings released
+
+---
+
+## 10. Frontend Routing Alignment Summary
+
+| Feature          | Route                 |
+| ---------------- | --------------------- |
+| Login/Register   | `/login`, `/register` |
+| Marketplace      | `/marketplace`        |
+| Property Details | `/property/:id`       |
+| Payment Modal    | Component-based       |
+| DI Dashboard     | `/di/dashboard`       |
+| Agent Dashboard  | `/agent/dashboard`    |
+| Admin Dashboard  | `/admin/dashboard`    |
+
+---
+
+## 11. Platform Enhancement Outcome
+
+This system ensures:
+
+* Accountability through timers
+* Trust via performance scoring
+* Sales alignment across departments
+* Clear frontend routing logic
+* Scalable marketplace governance
+
+---
+
+If you want, next I can:
+
+* Convert this into **API contracts**
+* Design **database schemas**
+* Map **React route guards**
+* Build **performance score formulas in code**
+* Or transform this into an **investor-ready product workflow diagram**
+
+State your next priority.
