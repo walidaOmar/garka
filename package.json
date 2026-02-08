@@ -2,7 +2,7 @@
   "name": "garka-monorepo",
   "private": true,
   "scripts": {
-    "install:frontend": "cd frontend && npm install",
+    "install:frontend": "cd frontend && npm install --include=dev",
     "install:backend": "cd backend && npm install",
     "build:frontend": "cd frontend && npm run build",
     "build": "npm run install:backend && npm run install:frontend && npm run build:frontend",
